@@ -16,49 +16,42 @@
             margin-right: 0.25rem;
         }
         
-        /* [新增] 視差滾動的背景圖 */
-        .parallax-hero {
-            /* - 設置背景圖片
-              - 您上傳的圖片 apple.png
-            */
-            background-image: url('apple.png');
-        }
+        /* [移除] 移除 parallax-hero 樣式 */
     </style>
 </head>
 <body class="bg-orange-50 font-sans leading-normal tracking-normal"> <!-- [風格] 暖色背景 -->
 
-    <!-- [修改] 區塊 1 + 2 合併為：視差滾動英雄區塊 -->
-    <!-- 
-      - parallax-hero: 設置背景圖 (來自 <style>)
-      - h-80 lg:h-96: 設定一個較大的高度
-      - bg-cover: 填滿
-      - bg-center: 置中
-      - bg-fixed: [!!] 核心！創造視差效果
-      - relative: 為了定位遮罩
-    -->
-    <div class="parallax-hero w-full h-80 lg:h-96 bg-cover bg-center bg-fixed relative shadow-lg">
-        <!-- 半透明遮罩 (確保文字可讀性) -->
-        <div class="absolute inset-0 bg-black/50"></div>
-        
-        <!-- 標題內容 (置中) -->
-        <!-- relative z-10 讓它浮在遮罩上 -->
-        <div class="relative z-10 max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-center items-center text-center">
-            <!-- [修改] 標題改為白色 -->
-            <h1 class="text-5xl font-bold text-white flex items-center justify-center shadow-md">
+    <!-- [還原] 區塊 1：頂部標題 (置中) -->
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-6">
+            <!-- [還原] 標題改回深色 -->
+            <h1 class="text-5xl font-bold text-gray-800 flex items-center justify-center">
                 <span class="fruit-icon text-5xl mr-3">🍎</span> 感謝果園
             </h1>
-            <!-- [修改] 副標題改為淺灰色 -->
-            <p class="text-xl text-gray-200 mt-3 shadow-md">團隊正向能量儀表板</p>
-        </div>
+            <!-- [還原] 副標題改回深色 -->
+            <p class="text-xl text-gray-600 mt-3">團隊正向能量儀表板</p>
+        </header>
     </div>
 
+    <!-- [還原] 區塊 2：全幅主視覺橫幅 -->
+    <!-- 
+      - relative z-0: 讓它作為重疊的底層
+    -->
+    <div class="relative w-full z-0">
+        <img src="apple.png" alt="感謝果園主視覺 - 可愛動物們在樹下" class="w-full h-64 lg:h-80 object-cover object-center shadow-lg">
+        <!-- [新增] 加入一個從底部往上的漸層，讓卡片重疊時更柔和 -->
+        <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-orange-50/50 to-transparent"></div>
+    </div>
 
-    <!-- 區塊 3：主內容 (置中) -->
-    <!-- [修改] 移除 pt-0，讓內容緊跟著 Hero 區塊 -->
-    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col items-center"> 
+    <!-- [修改] 區塊 3：主內容 (置中) -->
+    <!-- 
+      - relative z-10: 讓它浮在圖片上
+      - -mt-16: [!!] 核心！將這個區塊往上拉 16 單位 (64px)，產生重疊
+    -->
+    <div class="relative z-10 max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 pt-0 flex flex-col items-center -mt-16"> 
         
         <!-- 區塊 B：團隊成果 (置中) -->
-        <!-- [修改] 加上 w-full 確保寬度正確 -->
+        <!-- 這張白色卡片現在會蓋在圖片上 -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full">
             <div class="p-6 sm:p-8">
                 

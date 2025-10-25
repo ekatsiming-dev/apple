@@ -68,11 +68,19 @@
         const messageDiv = document.getElementById('login-message');
         
         const LOGGED_IN_KEY = `gg_user_${appId}`;
+        const IS_ADMIN_KEY = `gg_admin_${appId}`; // [!! 新增 !!]
 
         // --- 2. 檢查是否已登入 ---
         function checkLoginStatus() {
+            // [!! 修改 !!] 檢查登入時，也順便檢查 Admin Key
             if (localStorage.getItem(LOGGED_IN_KEY)) {
                 console.log("偵測到登入狀態，自動跳轉...");
+                // 如果是登入狀態，但沒有 Admin Key (可能是舊的登入)，就清掉
+                if (!localStorage.getItem(IS_ADMIN_KEY)) {
+                    localStorage.removeItem(LOGGED_IN_KEY);
+                    localStorage.removeItem(IS_ADMIN_KEY);
+                    return;
+                }
                 window.location.href = 'member.html';
             }
         }
@@ -85,12 +93,10 @@
         });
 
         async function handleLogin() {
-            // 1. 鎖定按鈕
             loginButton.disabled = true;
             loginButton.innerText = "登入中...";
-            showMessage(''); // 清空訊息
+            showMessage(''); 
 
-            // 2. 獲取輸入值
             const employeeId = employeeIdInput.value.trim();
             const password = passwordInput.value.trim();
 
@@ -101,7 +107,6 @@
             }
 
             try {
-                // 3. [重點] 呼叫 Apps Script API (POST)
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify({
@@ -116,25 +121,24 @@
 
                 const result = await response.json();
 
-                // 4. 檢查回應
                 if (result.status === 'success') {
-                    // 登入成功！
-                    const userId = result.data.userId;
-                    console.log("登入成功:", userId);
+                    // [!! 修改 !!]
+                    const { userId, isAdmin } = result.data;
+                    console.log("登入成功:", userId, "Admin:", isAdmin);
                     
+                    // [!! 修改 !!] 儲存 ID 和 Admin 狀態
                     localStorage.setItem(LOGGED_IN_KEY, userId);
+                    localStorage.setItem(IS_ADMIN_KEY, isAdmin); // 存入 true 或 false
                     
                     window.location.href = 'member.html';
                     
                 } else {
-                    // 登入失敗
                     console.log("登入失敗：", result.message);
                     showMessage(result.message || "人事號或密碼錯誤。");
                     resetButton();
                 }
 
             } catch (error) {
-                // 6. 網路或伺服器錯誤
                 console.error("登入時發生錯誤:", error);
                 showMessage("登入時發生網路錯誤，請稍後再試。");
                 resetButton();

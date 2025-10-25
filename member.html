@@ -33,7 +33,7 @@
 
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-bold text-gray-800">我的狀態</h2>
+                        <h2 class="text-2xl font-bold text-gray-800">我的倉庫</h2>
                         <div class="flex items-center space-x-2">
                             <div id="admin-link-placeholder"></div>
                             <button id="logout-button" title="登出" class="text-gray-500 hover:text-red-600 transition duration-150">
@@ -493,7 +493,7 @@
                     selectedGiftType = null;
                     giftTypeButtons.forEach(btn => btn.classList.remove('bg-yellow-400', 'bg-red-400', 'ring-2', 'ring-offset-1', 'ring-orange-500'));
                     giftAmountInput.value = 1;
-                    showGiftMessage("感謝已成功送出！", 'success');
+                    showGiftMessage("出貨完成！", 'success');
                     
                     if (type === 'seed') {
                         userInventory.seeds -= amount;

@@ -22,12 +22,21 @@
     <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col items-center">
         
         <!-- 頂部標題 -->
-        <header class="text-center mb-8">
+        <!-- [修改] 調整下方間距 -->
+        <header class="text-center mb-6">
             <h1 class="text-5xl font-bold text-gray-800 flex items-center justify-center">
                 <span class="fruit-icon text-5xl mr-3">🍎</span> 感謝果園
             </h1>
             <p class="text-xl text-gray-600 mt-3">團隊正向能量儀表板</p>
         </header>
+
+        <!-- [新增] 主視覺橫幅 -->
+        <!-- 我們將圖片放在標題和主要內容卡片之間，作為一個歡迎橫幅 -->
+        <div class="w-full mb-8">
+            <!-- src="apple.png" 指向您上傳的圖片檔案 -->
+            <!-- 加上圓角和陰影，使其風格與下方的卡片一致 -->
+            <img src="apple.png" alt="感謝果園主視覺 - 可愛動物們在樹下" class="w-full h-auto rounded-xl shadow-lg object-cover">
+        </div>
 
         <!-- 區塊 B：團隊成果 (置中) -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full">
@@ -42,7 +51,7 @@
                             讚賞牆 (匿名)
                         </a>
                         <a href="#" id="tab-generous" class="tab-link border-transparent text-gray-500 hover:text-orange-700 hover:border-orange-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
-                            <ion-icon name="heart-outline" class="mr-1"></ion-icon>
+                            <ion-icon name="heart-outline" class="mr-1"></ion-cmap/core.js"></script>
                             慷慨榜 (園丁積分)
                         </a>
                         <a href="#" id="tab-fruitful" class="tab-link border-transparent text-gray-500 hover:text-orange-700 hover:border-orange-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
@@ -329,4 +338,3 @@
 
 </body>
 </html>
-

@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
     <title>感謝果園 - 總覽</title>
     <!-- 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,25 +19,32 @@
 </head>
 <body class="bg-orange-50 font-sans leading-normal tracking-normal"> <!-- [風格] 暖色背景 -->
 
-    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col items-center">
-        
-        <!-- 頂部標題 -->
-        <!-- [修改] 調整下方間距 -->
+    <!-- 區塊 1：頂部標題 (置中) -->
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
         <header class="text-center mb-6">
             <h1 class="text-5xl font-bold text-gray-800 flex items-center justify-center">
                 <span class="fruit-icon text-5xl mr-3">🍎</span> 感謝果園
             </h1>
             <p class="text-xl text-gray-600 mt-3">團隊正向能量儀表板</p>
         </header>
+    </div>
 
-        <!-- [新增] 主視覺橫幅 -->
-        <!-- 我們將圖片放在標題和主要內容卡片之間，作為一個歡迎橫幅 -->
-        <div class="w-full mb-8">
-            <!-- src="apple.png" 指向您上傳的圖片檔案 -->
-            <!-- 加上圓角和陰影，使其風格與下方的卡片一致 -->
-            <img src="apple.png" alt="感謝果園主視覺 - 可愛動物們在樹下" class="w-full h-auto rounded-xl shadow-lg object-cover">
-        </div>
+    <!-- [修改] 區塊 2：全幅主視覺橫幅 -->
+    <!-- 這個 div 占滿全寬，不被 max-w-4xl 限制 -->
+    <div class="w-full mb-8 shadow-lg">
+        <!-- 
+          - w-full 滿寬
+          - h-64 (行動版) lg:h-80 (桌面版) 設定固定高度
+          - object-cover 會裁切圖片以填滿容器，保持比例
+          - object-center 調整圖片裁切位置 (您也可以改為 object-top 或 object-bottom 試試)
+        -->
+        <img src="apple.png" alt="感謝果園主視覺 - 可愛動物們在樹下" class="w-full h-64 lg:h-80 object-cover object-center">
+    </div>
 
+    <!-- 區塊 3：主內容 (置中) -->
+    <!-- [修改] pt-0 移除上方多餘間距 -->
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 pt-0 flex flex-col items-center"> 
+        
         <!-- 區塊 B：團隊成果 (置中) -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full">
             <div class="p-6 sm:p-8">
@@ -51,7 +58,7 @@
                             讚賞牆 (匿名)
                         </a>
                         <a href="#" id="tab-generous" class="tab-link border-transparent text-gray-500 hover:text-orange-700 hover:border-orange-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
-                            <ion-icon name="heart-outline" class="mr-1"></ion-cmap/core.js"></script>
+                            <ion-icon name="heart-outline" class="mr-1"></ion-icon>
                             慷慨榜 (園丁積分)
                         </a>
                         <a href="#" id="tab-fruitful" class="tab-link border-transparent text-gray-500 hover:text-orange-700 hover:border-orange-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
@@ -64,44 +71,18 @@
                 <!-- 內容區 -->
                 <div class="mt-6 min-h-[400px]">
                     <!-- 內容：讚賞牆 (預設) -->
-                    <!-- [修改] 增加 id="content-wall"，內容將由 JS 動態載入 -->
                     <div id="content-wall" class="tab-content space-y-4">
                         <p class="placeholder-text text-gray-500 text-center p-8">載入最新的感謝留言中...</p>
-                        <!-- 示範訊息 (將被動態內容取代) -->
-                        <!--
-                        <div class="p-5 bg-yellow-50 rounded-lg border border-yellow-200 shadow-sm">
-                            <p class="text-lg text-gray-800">"上次的專案簡報很精采，謝謝你分享的洞見！"</p>
-                            <p class="text-sm text-gray-500 mt-2 text-right">3 小時前</p>
-                        </div>
-                        -->
                     </div>
 
                     <!-- 內容：慷慨榜 (預設隱藏) -->
-                    <!-- [修改] 增加 id="content-generous"，內容將由 JS 動態載入 -->
                     <div id="content-generous" class="tab-content space-y-3" style="display: none;">
                         <p class="placeholder-text text-gray-500 text-center p-8">載入慷慨榜中...</p>
-                        <!-- 示範 (將被動態內容取代) -->
-                        <!-- 
-                        <div class="flex items-center p-4 bg-gray-50 rounded-lg">
-                            <span class="text-2xl font-bold text-orange-600 w-10">1.</span>
-                            <span class="text-lg font-medium text-gray-800 flex-1">王大明</span>
-                            <span class="text-lg font-semibold text-gray-700">150 積分</span>
-                        </div>
-                        -->
                     </div>
 
                     <!-- 內容：成果榜 (預設隱藏) -->
-                    <!-- [修改] 增加 id="content-fruitful"，內容將由 JS 動態載入 -->
                     <div id="content-fruitful" class="tab-content space-y-3" style="display: none;">
                         <p class="placeholder-text text-gray-500 text-center p-8">載入成果榜中...</p>
-                        <!-- 示範 (將被動態內容取代) -->
-                        <!-- 
-                        <div class="flex items-center p-4 bg-yellow-50 rounded-lg">
-                            <span class="text-2xl font-bold text-orange-600 w-10">1.</span>
-                            <span class="text-lg font-medium text-gray-800 flex-1">陳小花</span>
-                            <span class="text-lg font-semibold text-gray-700"><span class="fruit-icon">🌟</span> 5 <span class="fruit-icon ml-2">🍎</span> 12</span>
-                        </div>
-                        -->
                     </div>
                 </div>
 
@@ -114,10 +95,11 @@
             登入並發送感謝
         </a>
 
+        <!-- [修改] 調整 div 閉合標籤位置 -->
     </div> <!-- End of Container -->
 
 
-    <!-- [新增] 載入 Firebase SDK 並執行所有應用程式邏輯 -->
+    <!-- 載入 Firebase SDK 並執行所有應用程式邏輯 -->
     <script type="module">
         // 載入 Firebase 核心功能
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -128,7 +110,7 @@
             collection, 
             query, 
             where,
-            limit // [新增]
+            limit
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- 1. 全域變數與 DOM 元素 ---
@@ -147,7 +129,6 @@
         const generousContent = document.getElementById('content-generous');
         const fruitfulContent = document.getElementById('content-fruitful');
 
-        // [新增] 取消監聽的函式
         let wallUnsubscribe = () => {};
         let usersUnsubscribe = () => {};
 
@@ -164,7 +145,6 @@
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         console.log("使用者已登入 (匿名或 Custom Token):", user.uid);
-                        // 登入後，開始監聽資料
                         startRealtimeListeners();
                     } else {
                         console.log("使用者未登入，嘗試自動登入...");
@@ -194,24 +174,18 @@
         // --- 3. [新增] 即時資料監聽 ---
 
         function startRealtimeListeners() {
-            // 取消舊的監聽
             wallUnsubscribe();
             usersUnsubscribe();
 
             // 監聽「讚賞牆」 (最新的 10 筆交易)
             const wallQuery = query(
                 collection(db, `/artifacts/${appId}/public/data/transactions`),
-                limit(10) // [修改] 暫時先用 limit(10)，因為 orderBy 需要索引
-                // 注意：Firebase 的 orderBy('createdAt', 'desc') 需要手動建立索引
-                // 為了立即能用，我們先取得資料後在前端排序
+                limit(10) 
             );
             wallUnsubscribe = onSnapshot(wallQuery, (snapshot) => {
                 const items = [];
                 snapshot.forEach(doc => items.push(doc.data()));
-                
-                // 在前端排序
                 items.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
-                
                 renderWallList(items);
             });
 
@@ -222,8 +196,6 @@
             usersUnsubscribe = onSnapshot(usersQuery, (snapshot) => {
                 const users = [];
                 snapshot.forEach(doc => users.push(doc.data()));
-                
-                // 產生兩個榜單
                 renderGenerousList(users);
                 renderFruitfulList(users);
             });
@@ -231,9 +203,8 @@
 
         // --- 4. [新增] 渲染 DOM 內容 ---
 
-        // 渲染讚賞牆
         function renderWallList(items) {
-            wallContent.innerHTML = ''; // 清空
+            wallContent.innerHTML = ''; 
             if (items.length === 0) {
                 wallContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">目前還沒有任何感謝留言。</p>`;
                 return;
@@ -250,14 +221,11 @@
             });
         }
 
-        // 渲染慷慨榜
         function renderGenerousList(users) {
-            generousContent.innerHTML = ''; // 清空
-            
-            // 排序：依照 gardenerPoints 降冪
+            generousContent.innerHTML = ''; 
             users.sort((a, b) => (b.gardenerPoints || 0) - (a.gardenerPoints || 0));
             
-            users.slice(0, 10).forEach((user, index) => { // 只顯示前 10 名
+            users.slice(0, 10).forEach((user, index) => { 
                 const rank = index + 1;
                 const card = document.createElement('div');
                 card.className = "flex items-center p-4 bg-gray-50 rounded-lg";
@@ -270,11 +238,8 @@
             });
         }
 
-        // 渲染成果榜
         function renderFruitfulList(users) {
-            fruitfulContent.innerHTML = ''; // 清空
-            
-            // 排序：優先比金蘋果，再比蘋果
+            fruitfulContent.innerHTML = ''; 
             users.sort((a, b) => {
                 if ((b.goldenApples || 0) !== (a.goldenApples || 0)) {
                     return (b.goldenApples || 0) - (a.goldenApples || 0);
@@ -282,7 +247,7 @@
                 return (b.apples || 0) - (a.apples || 0);
             });
             
-            users.slice(0, 10).forEach((user, index) => { // 只顯示前 10 名
+            users.slice(0, 10).forEach((user, index) => { 
                 const rank = index + 1;
                 const card = document.createElement('div');
                 card.className = "flex items-center p-4 bg-yellow-50 rounded-lg";
@@ -305,24 +270,20 @@
                 tab.addEventListener('click', (e) => {
                     e.preventDefault();
                     
-                    // 移除所有 tab 的選中狀態
                     tabs.forEach(t => {
                         t.classList.remove('border-orange-500', 'text-orange-600');
                         t.classList.add('border-transparent', 'text-gray-500', 'hover:text-orange-700', 'hover:border-orange-300');
                         t.removeAttribute('aria-current');
                     });
 
-                    // 隱藏所有 content
                     contents.forEach(c => {
                         c.style.display = 'none';
                     });
 
-                    // 設為選中
                     tab.classList.add('border-orange-500', 'text-orange-600');
                     tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-orange-700', 'hover:border-orange-300');
                     tab.setAttribute('aria-current', 'page');
 
-                    // 顯示對應的 content
                     const targetId = tab.id.replace('tab-', 'content-');
                     const targetContent = document.getElementById(targetId);
                     if (targetContent) {
@@ -331,10 +292,10 @@
                 });
             });
 
-            // 啟動 Firebase
             initializeAppAndAuth();
         });
     </script>
 
 </body>
 </html>
+

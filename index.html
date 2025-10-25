@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>感謝果園 - 總覽</title>
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 載入 Heroicons 圖示庫 -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <style>
+        /* 簡單的自訂樣式，讓 emoji 更清晰 */
+        .fruit-icon {
+            font-size: 1.25rem;
+            margin-right: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-orange-50 font-sans leading-normal tracking-normal"> <!-- [風格] 暖色背景 -->
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col items-center">
+        
+        <!-- 頂部標題 -->
+        <header class="text-center mb-8">
+            <h1 class="text-5xl font-bold text-gray-800 flex items-center justify-center">
+                <span class="fruit-icon text-5xl mr-3">🍎</span> 感謝果園
+            </h1>
+            <p class="text-xl text-gray-600 mt-3">團隊正向能量儀表板</p>
+        </header>
+
+        <!-- 區塊 B：團隊成果 (置中) -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full">
+            <div class="p-6 sm:p-8">
+                
+                <!-- 分頁標籤 -->
+                <div class="border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                        <!-- [風格] 預設選中 "讚賞牆" -->
+                        <a href="#" id="tab-wall" class="tab-link border-orange-500 text-orange-600 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg" aria-current="page">
+                            <ion-icon name="chatbubbles-outline" class="mr-1"></ion-icon>
+                            讚賞牆 (匿名)
+                        </a>
+                        <a href="#" id="tab-generous" class="tab-link border-transparent text-gray-500 hover:text-orange-700 hover:border-orange-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
+                            <ion-icon name="heart-outline" class="mr-1"></ion-icon>
+                            慷慨榜 (園丁積分)
+                        </a>
+                        <a href="#" id="tab-fruitful" class="tab-link border-transparent text-gray-500 hover:text-orange-700 hover:border-orange-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
+                            <ion-icon name="trophy-outline" class="mr-1"></ion-icon>
+                            成果榜
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- 內容區 -->
+                <div class="mt-6 min-h-[400px]">
+                    <!-- 內容：讚賞牆 (預設) -->
+                    <!-- [修改] 增加 id="content-wall"，內容將由 JS 動態載入 -->
+                    <div id="content-wall" class="tab-content space-y-4">
+                        <p class="placeholder-text text-gray-500 text-center p-8">載入最新的感謝留言中...</p>
+                        <!-- 示範訊息 (將被動態內容取代) -->
+                        <!--
+                        <div class="p-5 bg-yellow-50 rounded-lg border border-yellow-200 shadow-sm">
+                            <p class="text-lg text-gray-800">"上次的專案簡報很精采，謝謝你分享的洞見！"</p>
+                            <p class="text-sm text-gray-500 mt-2 text-right">3 小時前</p>
+                        </div>
+                        -->
+                    </div>
+
+                    <!-- 內容：慷慨榜 (預設隱藏) -->
+                    <!-- [修改] 增加 id="content-generous"，內容將由 JS 動態載入 -->
+                    <div id="content-generous" class="tab-content space-y-3" style="display: none;">
+                        <p class="placeholder-text text-gray-500 text-center p-8">載入慷慨榜中...</p>
+                        <!-- 示範 (將被動態內容取代) -->
+                        <!-- 
+                        <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                            <span class="text-2xl font-bold text-orange-600 w-10">1.</span>
+                            <span class="text-lg font-medium text-gray-800 flex-1">王大明</span>
+                            <span class="text-lg font-semibold text-gray-700">150 積分</span>
+                        </div>
+                        -->
+                    </div>
+
+                    <!-- 內容：成果榜 (預設隱藏) -->
+                    <!-- [修改] 增加 id="content-fruitful"，內容將由 JS 動態載入 -->
+                    <div id="content-fruitful" class="tab-content space-y-3" style="display: none;">
+                        <p class="placeholder-text text-gray-500 text-center p-8">載入成果榜中...</p>
+                        <!-- 示範 (將被動態內容取代) -->
+                        <!-- 
+                        <div class="flex items-center p-4 bg-yellow-50 rounded-lg">
+                            <span class="text-2xl font-bold text-orange-600 w-10">1.</span>
+                            <span class="text-lg font-medium text-gray-800 flex-1">陳小花</span>
+                            <span class="text-lg font-semibold text-gray-700"><span class="fruit-icon">🌟</span> 5 <span class="fruit-icon ml-2">🍎</span> 12</span>
+                        </div>
+                        -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- 登入按鈕 -->
+        <a href="member.html" class="mt-8 px-8 py-4 bg-orange-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-orange-700 transition duration-300 transform hover:-translate-y-1">
+            <ion-icon name="log-in-outline" class="mr-2"></ion-icon>
+            登入並發送感謝
+        </a>
+
+    </div> <!-- End of Container -->
+
+
+    <!-- [新增] 載入 Firebase SDK 並執行所有應用程式邏輯 -->
+    <script type="module">
+        // 載入 Firebase 核心功能
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            onSnapshot, 
+            collection, 
+            query, 
+            where,
+            limit // [新增]
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- 1. 全域變數與 DOM 元素 ---
+        
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+        
+        // DOM 元素
+        const tabs = document.querySelectorAll('.tab-link');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        const wallContent = document.getElementById('content-wall');
+        const generousContent = document.getElementById('content-generous');
+        const fruitfulContent = document.getElementById('content-fruitful');
+
+        // [新增] 取消監聽的函式
+        let wallUnsubscribe = () => {};
+        let usersUnsubscribe = () => {};
+
+        // --- 2. Firebase 初始化與認證 ---
+
+        async function initializeAppAndAuth() {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                await setPersistence(auth, browserLocalPersistence);
+                console.log("Firebase 初始化完成。");
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        console.log("使用者已登入 (匿名或 Custom Token):", user.uid);
+                        // 登入後，開始監聽資料
+                        startRealtimeListeners();
+                    } else {
+                        console.log("使用者未登入，嘗試自動登入...");
+                        await signIn();
+                    }
+                });
+            } catch (error) {
+                console.error("Firebase 初始化失敗:", error);
+                alert("無法連接到伺服器，請稍後再試。");
+            }
+        }
+
+        async function signIn() {
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                    console.log("使用 Custom Token 登入成功。");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("使用匿名登入成功。");
+                }
+            } catch (error) {
+                console.error("登入失敗:", error);
+            }
+        }
+
+        // --- 3. [新增] 即時資料監聽 ---
+
+        function startRealtimeListeners() {
+            // 取消舊的監聽
+            wallUnsubscribe();
+            usersUnsubscribe();
+
+            // 監聽「讚賞牆」 (最新的 10 筆交易)
+            const wallQuery = query(
+                collection(db, `/artifacts/${appId}/public/data/transactions`),
+                limit(10) // [修改] 暫時先用 limit(10)，因為 orderBy 需要索引
+                // 注意：Firebase 的 orderBy('createdAt', 'desc') 需要手動建立索引
+                // 為了立即能用，我們先取得資料後在前端排序
+            );
+            wallUnsubscribe = onSnapshot(wallQuery, (snapshot) => {
+                const items = [];
+                snapshot.forEach(doc => items.push(doc.data()));
+                
+                // 在前端排序
+                items.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+                
+                renderWallList(items);
+            });
+
+            // 監聽「所有使用者」資料 (用於慷慨榜與成果榜)
+            const usersQuery = query(
+                collection(db, `/artifacts/${appId}/public/data/users`)
+            );
+            usersUnsubscribe = onSnapshot(usersQuery, (snapshot) => {
+                const users = [];
+                snapshot.forEach(doc => users.push(doc.data()));
+                
+                // 產生兩個榜單
+                renderGenerousList(users);
+                renderFruitfulList(users);
+            });
+        }
+
+        // --- 4. [新增] 渲染 DOM 內容 ---
+
+        // 渲染讚賞牆
+        function renderWallList(items) {
+            wallContent.innerHTML = ''; // 清空
+            if (items.length === 0) {
+                wallContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">目前還沒有任何感謝留言。</p>`;
+                return;
+            }
+            items.forEach(item => {
+                const timestamp = item.createdAt ? item.createdAt.toDate().toLocaleString('zh-TW', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '剛剛';
+                const card = document.createElement('div');
+                card.className = "p-5 bg-yellow-50 rounded-lg border border-yellow-200 shadow-sm";
+                card.innerHTML = `
+                    <p class="text-lg text-gray-800">"${item.message}"</p>
+                    <p class="text-sm text-gray-500 mt-2 text-right">${timestamp}</p>
+                `;
+                wallContent.appendChild(card);
+            });
+        }
+
+        // 渲染慷慨榜
+        function renderGenerousList(users) {
+            generousContent.innerHTML = ''; // 清空
+            
+            // 排序：依照 gardenerPoints 降冪
+            users.sort((a, b) => (b.gardenerPoints || 0) - (a.gardenerPoints || 0));
+            
+            users.slice(0, 10).forEach((user, index) => { // 只顯示前 10 名
+                const rank = index + 1;
+                const card = document.createElement('div');
+                card.className = "flex items-center p-4 bg-gray-50 rounded-lg";
+                card.innerHTML = `
+                    <span class="text-2xl font-bold text-orange-600 w-10">${rank}.</span>
+                    <span class="text-lg font-medium text-gray-800 flex-1">${user.name}</span>
+                    <span class="text-lg font-semibold text-gray-700">${user.gardenerPoints || 0} 積分</span>
+                `;
+                generousContent.appendChild(card);
+            });
+        }
+
+        // 渲染成果榜
+        function renderFruitfulList(users) {
+            fruitfulContent.innerHTML = ''; // 清空
+            
+            // 排序：優先比金蘋果，再比蘋果
+            users.sort((a, b) => {
+                if ((b.goldenApples || 0) !== (a.goldenApples || 0)) {
+                    return (b.goldenApples || 0) - (a.goldenApples || 0);
+                }
+                return (b.apples || 0) - (a.apples || 0);
+            });
+            
+            users.slice(0, 10).forEach((user, index) => { // 只顯示前 10 名
+                const rank = index + 1;
+                const card = document.createElement('div');
+                card.className = "flex items-center p-4 bg-yellow-50 rounded-lg";
+                card.innerHTML = `
+                    <span class="text-2xl font-bold text-orange-600 w-10">${rank}.</span>
+                    <span class="text-lg font-medium text-gray-800 flex-1">${user.name}</span>
+                    <span class="text-lg font-semibold text-gray-700">
+                        <span class="fruit-icon">🌟</span> ${user.goldenApples || 0}
+                        <span class="fruit-icon ml-3">🍎</span> ${user.apples || 0}
+                    </span>
+                `;
+                fruitfulContent.appendChild(card);
+            });
+        }
+
+        // --- 5. 頁面互動 (分頁切換) ---
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // 移除所有 tab 的選中狀態
+                    tabs.forEach(t => {
+                        t.classList.remove('border-orange-500', 'text-orange-600');
+                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-orange-700', 'hover:border-orange-300');
+                        t.removeAttribute('aria-current');
+                    });
+
+                    // 隱藏所有 content
+                    contents.forEach(c => {
+                        c.style.display = 'none';
+                    });
+
+                    // 設為選中
+                    tab.classList.add('border-orange-500', 'text-orange-600');
+                    tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-orange-700', 'hover:border-orange-300');
+                    tab.setAttribute('aria-current', 'page');
+
+                    // 顯示對應的 content
+                    const targetId = tab.id.replace('tab-', 'content-');
+                    const targetContent = document.getElementById(targetId);
+                    if (targetContent) {
+                        targetContent.style.display = 'block';
+                    }
+                });
+            });
+
+            // 啟動 Firebase
+            initializeAppAndAuth();
+        });
+    </script>
+
+</body>
+</html>
+

@@ -145,8 +145,10 @@
             try {
                 // 3. 建立一個批次 (Batch)
                 const batch = writeBatch(db);
-                // [修改] 更新資料庫路徑 (移除 public/data)
+                
+                // [資料流修復] 定義私密和公開的路徑
                 const usersColRef = collection(db, `/artifacts/${appId}/users`);
+                const publicUsersColRef = collection(db, `/artifacts/${appId}/public/data/users`);
 
                 lines.forEach(line => {
                     // [修改] 解析 3 個部分
@@ -157,11 +159,10 @@
                         const password = parts[2].trim(); // [新增] 獲取密碼
                         
                         if (id.length > 0 && name.length > 0 && password.length > 0) {
-                            // [修改] 使用「人事號」作為文件 ID
-                            const newUserRef = doc(db, `/artifacts/${appId}/users`, id); 
                             
-                            // [修改] 設定初始資料，包含 password
-                            batch.set(newUserRef, {
+                            // [資料流修復] 準備「私密」資料 (包含密碼)
+                            const newUserRef = doc(db, `/artifacts/${appId}/users`, id); 
+                            const privateData = {
                                 name: name,
                                 password: password, // [!!] 明文儲存密碼
                                 seeds: 7, // 初始 7 顆種子
@@ -170,7 +171,19 @@
                                 gardenerPoints: 0,
                                 createdAt: serverTimestamp(),
                                 lastSeedAt: null // 確保他們明天可以領種子
-                            });
+                            };
+                            batch.set(newUserRef, privateData);
+
+                            // [資料流修復] 準備「公開」資料 (不含密碼)
+                            const publicUserRef = doc(db, `/artifacts/${appId}/public/data/users`, id);
+                            const publicData = {
+                                name: name,
+                                apples: 0,
+                                goldenApples: 0,
+                                gardenerPoints: 0
+                            };
+                            batch.set(publicUserRef, publicData);
+
                             successCount++;
                         } else {
                             errorCount++;
@@ -239,4 +252,3 @@
 
 </body>
 </html>
-

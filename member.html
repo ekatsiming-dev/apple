@@ -31,9 +31,12 @@
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-2xl font-bold text-gray-800">我的狀態</h2>
-                        <button id="logout-button" title="登出" class="text-gray-500 hover:text-red-600 transition duration-150">
-                            <ion-icon name="log-out-outline" class="text-2xl"></ion-icon>
-                        </button>
+                        <div class="flex items-center space-x-2">
+                            <div id="admin-link-placeholder"></div>
+                            <button id="logout-button" title="登出" class="text-gray-500 hover:text-red-600 transition duration-150">
+                                <ion-icon name="log-out-outline" class="text-2xl"></ion-icon>
+                            </button>
+                        </div>
                     </div>
                     <div class="text-center mb-4">
                         <img src="https://placehold.co/100x100/FEE2D5/E98256?text=Hi!" class="w-24 h-24 rounded-full mx-auto shadow-md border-4 border-white">
@@ -55,6 +58,28 @@
                     </div>
                     <p class="text-xs text-gray-500 mt-4 text-center">每天登入會自動補充 1 顆種子 (上限 7 顆)</p>
                 </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">修改密碼</h2>
+                    <form id="change-password-form" class="space-y-4">
+                        <div>
+                            <label for="new-password" class="block text-sm font-medium text-gray-700">新密碼</label>
+                            <input type="password" id="new-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm py-2 px-3" placeholder="請輸入您的新密碼">
+                        </div>
+                        <div>
+                            <label for="confirm-password" class="block text-sm font-medium text-gray-700">確認新密碼</label>
+                            <input type="password" id="confirm-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm py-2 px-3" placeholder="請再次輸入新密碼">
+                        </div>
+                        <div id="password-form-message" class="text-sm h-5 text-red-600"></div>
+                        <button type="submit" id="submit-password-button" class="w-full bg-gray-700 text-white py-2 px-4 rounded-md font-semibold shadow-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50">
+                            儲存新密碼
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="md:col-span-2 space-y-6">
 
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">快速發送感謝</h2>
@@ -94,10 +119,6 @@
                         </button>
                     </form>
                 </div>
-
-            </div>
-
-            <div class="md:col-span-2 space-y-6">
                 
                 <div class="bg-white rounded-xl shadow-lg">
                     <div class="border-b border-gray-200">
@@ -119,27 +140,9 @@
                     
                     <div id="tab-sent" class="tab-content p-6 space-y-4">
                         <div id="sent-list" class="divide-y divide-gray-200">
-                            <p class="text-gray-500 py-4">正在載入感謝紀錄...</p>
+                            <p class="text-gray-500 py-4">正在載T感謝紀錄...</p>
                         </div>
                     </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">修改密碼</h2>
-                    <form id="change-password-form" class="space-y-4">
-                        <div>
-                            <label for="new-password" class="block text-sm font-medium text-gray-700">新密碼</label>
-                            <input type="password" id="new-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm py-2 px-3" placeholder="請輸入您的新密碼">
-                        </div>
-                        <div>
-                            <label for="confirm-password" class="block text-sm font-medium text-gray-700">確認新密碼</label>
-                            <input type="password" id="confirm-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm py-2 px-3" placeholder="請再次輸入新密碼">
-                        </div>
-                        <div id="password-form-message" class="text-sm h-5 text-red-600"></div>
-                        <button type="submit" id="submit-password-button" class="w-full bg-gray-700 text-white py-2 px-4 rounded-md font-semibold shadow-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50">
-                            儲存新密碼
-                        </button>
-                    </form>
                 </div>
 
                 <div class="text-center mt-6">
@@ -147,11 +150,7 @@
                 </div>
 
             </div>
-        </div>
-    </div>
-
-
-    <script type="module">
+        </div> </div> <script type="module">
         // [!!] 已填入您提供的 Apps Script 網址
         const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
         const appId = 'default-app-id'; 
@@ -160,6 +159,7 @@
         let currentUserId = null;
         let userInventory = { seeds: 0, apples: 0 };
         const LOGGED_IN_KEY = `gg_user_${appId}`;
+        const IS_ADMIN_KEY = `gg_admin_${appId}`; 
 
         // DOM 元素 (快速發送)
         const sendGiftForm = document.getElementById('send-gift-form');
@@ -178,6 +178,7 @@
         const appleCountEl = document.getElementById('apple-count');
         const goldenAppleCountEl = document.getElementById('golden-apple-count');
         const logoutButton = document.getElementById('logout-button'); 
+        const adminLinkPlaceholder = document.getElementById('admin-link-placeholder'); 
 
         // DOM 元素 (感謝歷程)
         const tabButtons = document.querySelectorAll('.tab-btn');
@@ -198,9 +199,10 @@
 
         function checkLoginAndInit() {
             currentUserId = localStorage.getItem(LOGGED_IN_KEY);
+            const isAdmin = localStorage.getItem(IS_ADMIN_KEY); 
             
-            if (!currentUserId) {
-                console.log("未登入。");
+            if (!currentUserId || !isAdmin) { 
+                console.log("未登入或登入狀態不完整。");
                 document.body.innerHTML = `
                     <div class="flex items-center justify-center h-screen bg-orange-50">
                         <div class="text-center p-8 bg-white shadow-lg rounded-xl">
@@ -212,7 +214,7 @@
                         </div>
                     </div>
                 `;
-                return;
+                return; 
             }
             
             console.log("已登入使用者 ID:", currentUserId);
@@ -224,8 +226,10 @@
         async function setupAppForUser(userId) {
             console.log(`為 ${userId} 啟動應用...`);
 
+            renderAdminButton();
+
             try {
-                // 3.1 [修改] 呼叫 Apps Script (GET) 取得所有會員資料
+                // 3.1 呼叫 Apps Script (GET) 取得所有會員資料
                 const response = await fetch(`${API_URL}?action=get_member_data&userId=${userId}`);
                 const result = await response.json();
 
@@ -241,7 +245,6 @@
                 appleCountEl.innerText = myStats.apples;
                 goldenAppleCountEl.innerText = myStats.goldenApples;
 
-                // 更新本地庫存
                 userInventory.seeds = myStats.seeds;
                 userInventory.apples = myStats.apples;
 
@@ -272,6 +275,21 @@
         }
 
         // --- 4. 功能實作 ---
+
+        // 4.0 渲染 Admin 按鈕
+        function renderAdminButton() {
+            const isAdmin = localStorage.getItem(IS_ADMIN_KEY) === 'true'; 
+            
+            if (isAdmin) {
+                adminLinkPlaceholder.innerHTML = `
+                    <a href="./admin.html" title="後台管理" class="text-gray-500 hover:text-orange-600 transition duration-150">
+                        <ion-icon name="server-outline" class="text-2xl"></ion-icon>
+                    </a>
+                `;
+            } else {
+                adminLinkPlaceholder.innerHTML = ''; 
+            }
+        }
         
         // 4.1 載入同事名單 (渲染)
         function loadColleagues(colleagues) {
@@ -291,7 +309,6 @@
         
         // 4.2 載入感謝歷程 (渲染)
         function loadTransactionHistory(received, sent) {
-            // 渲染 "收到的"
             let receivedHtml = '';
             if (!received || received.length === 0) {
                 receivedHtml = '<p class="text-gray-500 py-4">目前沒有收到的感謝。</p>';
@@ -313,7 +330,6 @@
             }
             receivedList.innerHTML = receivedHtml;
             
-            // 渲染 "送出的"
             let sentHtml = '';
             if (!sent || sent.length === 0) {
                 sentHtml = '<p class="text-gray-500 py-4">目前沒有送出的感謝。</p>';
@@ -339,6 +355,7 @@
         // 4.3 登出
         function handleLogout() {
             localStorage.removeItem(LOGGED_IN_KEY);
+            localStorage.removeItem(IS_ADMIN_KEY); 
             console.log("已登出");
             document.body.innerHTML = `
                 <div class="flex items-center justify-center h-screen bg-orange-50">
@@ -353,7 +370,7 @@
             `;
         }
         
-        // 4.4 [修改] 修改密碼 (POST)
+        // 4.4 修改密碼 (POST)
         async function handleChangePassword() {
             const newPassword = newPasswordInput.value;
             const confirmPassword = confirmPasswordInput.value;
@@ -375,7 +392,6 @@
             submitPasswordButton.innerText = "儲存中...";
             
             try {
-                // 呼叫 Apps Script (POST)
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify({
@@ -410,7 +426,7 @@
 
         // --- 5. 表單與 UI 互動邏輯 ---
 
-        // 5.1 [修改] 感謝表單提交 (POST)
+        // 5.1 感謝表單提交 (POST)
         sendGiftForm.addEventListener('submit', (e) => {
             e.preventDefault();
             handleGiftSubmit();
@@ -422,7 +438,6 @@
             const amount = parseInt(giftAmountInput.value, 10);
             const type = selectedGiftType;
 
-            // 驗證
             if (!receiverId) { showGiftMessage("請選擇一位感謝對象。"); return; }
             if (!message) { showGiftMessage("感謝訊息不可為空。"); return; }
             if (!type) { showGiftMessage("請選擇要送出的禮物類型。"); return; }
@@ -439,7 +454,6 @@
             showGiftMessage("");
             
             try {
-                // 呼叫 Apps Script (POST)
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify({
@@ -456,7 +470,6 @@
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    // 交易成功
                     console.log("交易成功！");
                     sendGiftForm.reset();
                     selectedGiftType = null;
@@ -464,7 +477,6 @@
                     giftAmountInput.value = 1;
                     showGiftMessage("感謝已成功送出！", 'success');
                     
-                    // [重要] 更新本地庫存
                     if (type === 'seed') {
                         userInventory.seeds -= amount;
                     } else {
@@ -473,11 +485,9 @@
                     seedCountEl.innerText = userInventory.seeds;
                     appleCountEl.innerText = userInventory.apples;
                     
-                    // 重新載入歷程
                     setupAppForUser(currentUserId); 
                     
                 } else {
-                    // 交易失敗
                     throw new Error(result.message);
                 }
                 
@@ -495,7 +505,7 @@
             giftFormMessage.className = `text-${type === 'success' ? 'green' : 'red'}-600 text-sm h-5`;
         }
 
-        // 5.2 禮物類型按鈕 (邏輯不變)
+        // 5.2 禮物類型按鈕
         giftTypeButtons.forEach(button => {
             button.addEventListener('click', () => {
                 giftTypeButtons.forEach(btn => {
@@ -512,7 +522,7 @@
             });
         });
         
-        // 5.3 數量按鈕 (邏輯不變)
+        // 5.3 數量按鈕
         amountDecrease.addEventListener('click', () => {
             let currentAmount = parseInt(giftAmountInput.value, 10);
             if (currentAmount > 1) { giftAmountInput.value = currentAmount - 1; }
@@ -522,7 +532,7 @@
             giftAmountInput.value = currentAmount + 1;
         });
         
-        // 5.4 歷程分頁 (邏輯不變)
+        // 5.4 歷程分頁
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabId = button.dataset.tab;
@@ -543,7 +553,7 @@
         });
 
         // --- 6. 啟動應用程式 ---
-        checkLoginAndInit(); // 啟動時先檢查登入
+        checkLoginAndInit(); 
 
     </script>
 

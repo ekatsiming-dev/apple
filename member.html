@@ -285,7 +285,7 @@
             // [修改] 資料庫路徑
             const userDocRef = doc(db, `/artifacts/${appId}/users`, userId);
             const usersColRef = collection(db, `/artifacts/${appId}/users`);
-            const transactionsColRef = collection(db, `/artifacts/${appId}/transactions`);
+            const transactionsColRef = collection(db, `/artifacts/${appId}/transactions`); // [資料流] 私密交易紀錄
 
             // 3.1 [即時] 監聽使用者狀態 (庫存)
             onSnapshot(userDocRef, async (docSnap) => {
@@ -319,7 +319,7 @@
             // 3.3 [一次性] 載入同事名單 (排除自己)
             loadColleagues(usersColRef, userId);
 
-            // 3.4 [即時] 監聽感謝歷程
+            // 3.4 [即時] 監聽感謝歷程 (只監聽私密的)
             loadTransactionHistory(transactionsColRef, userId);
             
             // 3.5 [新增] 綁定登出按鈕
@@ -351,6 +351,7 @@
             
             console.log("發放每日種子...");
             try {
+                // [資料流修復] 發放種子只需要更新私密資料庫
                 await updateDoc(userRef, {
                     seeds: userData.seeds + 1,
                     lastSeedAt: serverTimestamp() // 記錄今天
@@ -394,6 +395,7 @@
         
         // 4.3 載入感謝歷程 (收到的 & 送出的)
         function loadTransactionHistory(transactionsColRef, myId) {
+            // [資料流] 這裡讀取的是「私密」的 transactionsColRef
             // 監聽 "收到的"
             const receivedQuery = query(transactionsColRef, where("receiverId", "==", myId));
             onSnapshot(receivedQuery, (snapshot) => {
@@ -483,6 +485,7 @@
         
         // 4.5 [新增] 修改密碼
         async function handleChangePassword(userRef) {
+            // [資料流] 修改密碼只需要更新私密資料庫
             const newPassword = newPasswordInput.value;
             const confirmPassword = confirmPasswordInput.value;
             
@@ -581,22 +584,27 @@
             submitGiftButton.innerText = "傳送中...";
             showGiftMessage("");
 
-            // [修改] 資料庫路徑
+            // [資料流修復] 定義所有需要用到的路徑
+            // 私密路徑
             const senderRef = doc(db, `/artifacts/${appId}/users`, currentUserId);
             const receiverRef = doc(db, `/artifacts/${appId}/users`, receiverId);
             const transactionsColRef = collection(db, `/artifacts/${appId}/transactions`);
+            // 公開路徑
+            const publicSenderRef = doc(db, `/artifacts/${appId}/public/data/users`, currentUserId);
+            const publicReceiverRef = doc(db, `/artifacts/${appId}/public/data/users`, receiverId);
+            const publicTransactionsColRef = collection(db, `/artifacts/${appId}/public/data/transactions`);
             
             try {
                 // 執行 Firestore 交易
                 await runTransaction(db, async (transaction) => {
-                    // 1. 讀取發送者資料
+                    // 1. 讀取「私密」發送者資料
                     const senderSnap = await transaction.get(senderRef);
                     if (!senderSnap.exists()) {
                         throw "找不到發送者資料。";
                     }
                     const senderData = senderSnap.data();
 
-                    // 2. 讀取接收者資料
+                    // 2. 讀取「私密」接收者資料
                     const receiverSnap = await transaction.get(receiverRef);
                     if (!receiverSnap.exists()) {
                         throw "找不到接收者資料。";
@@ -612,32 +620,55 @@
                     }
 
                     // 4. 計算更新
-                    let senderUpdates = {};
-                    let receiverUpdates = {};
+                    let privateSenderUpdates = {};
+                    let privateReceiverUpdates = {};
+                    let publicSenderUpdates = {}; // [資料流]
+                    let publicReceiverUpdates = {}; // [資料流]
 
                     if (type === 'seed') {
-                        senderUpdates = {
+                        // 私密更新
+                        privateSenderUpdates = {
                             seeds: senderData.seeds - amount,
                             gardenerPoints: (senderData.gardenerPoints || 0) + amount
                         };
-                        receiverUpdates = {
+                        privateReceiverUpdates = {
+                            apples: receiverData.apples + amount
+                        };
+                        // 公開更新
+                        publicSenderUpdates = {
+                            gardenerPoints: (senderData.gardenerPoints || 0) + amount
+                        };
+                        publicReceiverUpdates = {
                             apples: receiverData.apples + amount
                         };
                     } else { // type === 'apple'
-                        senderUpdates = {
+                        // 私密更新
+                        privateSenderUpdates = {
                             apples: senderData.apples - amount,
                             gardenerPoints: (senderData.gardenerPoints || 0) + (amount * 5) // 送蘋果 5 倍積分
                         };
-                        receiverUpdates = {
+                        privateReceiverUpdates = {
+                            goldenApples: receiverData.goldenApples + amount
+                        };
+                        // 公開更新
+                        publicSenderUpdates = {
+                            gardenerPoints: (senderData.gardenerPoints || 0) + (amount * 5)
+                        };
+                        publicReceiverUpdates = {
                             goldenApples: receiverData.goldenApples + amount
                         };
                     }
 
-                    // 5. 寫入更新
-                    transaction.update(senderRef, senderUpdates);
-                    transaction.update(receiverRef, receiverUpdates);
+                    // 5. 寫入「私密」更新
+                    transaction.update(senderRef, privateSenderUpdates);
+                    transaction.update(receiverRef, privateReceiverUpdates);
 
-                    // 6. 寫入交易紀錄
+                    // 6. [資料流修復] 寫入「公開」更新
+                    //    注意：我們使用 merge: true 來確保如果文件尚不存在 (雖然 admin 應該已建立)，它會被建立
+                    transaction.set(publicSenderRef, publicSenderUpdates, { merge: true });
+                    transaction.set(publicReceiverRef, publicReceiverUpdates, { merge: true });
+
+                    // 7. 寫入「私密」交易紀錄
                     const newTxRef = doc(transactionsColRef); // 自動產生 ID
                     transaction.set(newTxRef, {
                         senderId: currentUserId,
@@ -648,6 +679,14 @@
                         amount: amount,
                         message: message,
                         createdAt: serverTimestamp()
+                    });
+
+                    // 8. [資料流修復] 寫入「公開」交易紀錄 (匿名)
+                    const newPublicTxRef = doc(publicTransactionsColRef); // 自動產生 ID
+                    transaction.set(newPublicTxRef, {
+                        message: message, // 只有訊息
+                        createdAt: serverTimestamp() // 和時間
+                        // [注意] 這裡完全不包含 senderId, senderName, receiverId, receiverName
                     });
                 });
 
@@ -745,4 +784,3 @@
 
 </body>
 </html>
-

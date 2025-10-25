@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>感謝果園 - 登入</title>
-    <!-- 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 載入 Heroicons 圖示庫 -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </head>
@@ -15,7 +13,6 @@
     <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
             
-            <!-- 頂部標題 -->
             <header class="text-center">
                 <h1 class="text-5xl font-bold text-orange-600 flex items-center justify-center">
                     <ion-icon name="sparkles-outline" class="mr-3"></ion-icon>
@@ -24,7 +21,6 @@
                 <p class="text-xl text-gray-700 mt-3">請使用您的人事號登入</p>
             </header>
 
-            <!-- 主卡片 -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full mt-8">
                 <div class="p-6 sm:p-8">
                     
@@ -35,16 +31,13 @@
                                 <input id="employee-id" name="employee-id" type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg" placeholder="請輸入您的人事號">
                             </div>
                         </div>
-
                         <div>
                             <label for="password" class="block text-lg font-medium text-gray-700">密碼</label>
                             <div class="mt-1">
                                 <input id="password" name="password" type="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg" placeholder="預設密碼為人事號">
                             </div>
                         </div>
-
-                        <div id="login-message" class="text-sm h-5 text-red-600 font-medium"></div> <!-- 用於顯示錯誤訊息 -->
-
+                        <div id="login-message" class="text-sm h-5 text-red-600 font-medium"></div>
                         <div>
                             <button type="submit" id="login-button" class="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-lg shadow-sm text-xl font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-200 disabled:opacity-50">
                                 <ion-icon name="log-in-outline" class="mr-2"></ion-icon>
@@ -52,36 +45,21 @@
                             </button>
                         </div>
                     </form>
-
                 </div>
             </div>
             
-            <!-- 導覽連結 -->
             <div class="text-center mt-6">
                 <a href="dashboard.html" class="text-lg text-gray-700 hover:text-orange-600">&larr; 返回公開總覽頁</a>
             </div>
 
         </div>
-    </div> <!-- End of Container -->
+    </div>
 
-
-    <!-- 載入 Firebase SDK 並執行登入邏輯 -->
     <script type="module">
-        // 載入 Firebase 核心功能
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getFirestore, 
-            doc,
-            getDoc // [重點] 載入 getDoc 來讀取單一文件
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // [!!] 已填入您提供的 Apps Script 網址
+        const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
+        const appId = 'default-app-id';
 
-        // --- 1. 全域變數與 DOM 元素 ---
-        
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        let app, db;
-        
         // DOM 元素
         const form = document.getElementById('login-form');
         const employeeIdInput = document.getElementById('employee-id');
@@ -89,27 +67,13 @@
         const loginButton = document.getElementById('login-button');
         const messageDiv = document.getElementById('login-message');
         
-        // [重點] 我們將使用 localStorage 來儲存登入狀態
-        // localStorage 是一個瀏覽器內建的小型儲存空間
-        const LOGGED_IN_KEY = `gg_user_${appId}`; // 感謝果園 (Gratitude Garden) User Key
+        const LOGGED_IN_KEY = `gg_user_${appId}`;
 
-        // --- 2. Firebase 初始化 ---
-        async function initializeAppAndDb() {
-            try {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                console.log("Firebase 初始化完成 (簡易模式)。");
-                
-                // [檢查] 如果已經登入，直接跳轉
-                if (localStorage.getItem(LOGGED_IN_KEY)) {
-                    console.log("偵測到登入狀態，自動跳轉...");
-                    window.location.href = 'member.html';
-                }
-
-            } catch (error) { 
-                console.error("Firebase 初始化失敗:", error);
-                showMessage("無法連接到伺服器。");
-                loginButton.disabled = true;
+        // --- 2. 檢查是否已登入 ---
+        function checkLoginStatus() {
+            if (localStorage.getItem(LOGGED_IN_KEY)) {
+                console.log("偵測到登入狀態，自動跳轉...");
+                window.location.href = 'member.html';
             }
         }
 
@@ -117,10 +81,6 @@
         
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            if (!db) { 
-                showMessage("尚未連接到資料庫，請稍候...");
-                return;
-            }
             handleLogin();
         });
 
@@ -141,39 +101,40 @@
             }
 
             try {
-                // 3. [重點] 嘗試讀取使用者的資料
-                // 我們直接用人事號當作文件 ID
-                const userRef = doc(db, `/artifacts/${appId}/users`, employeeId);
-                const userSnap = await getDoc(userRef);
+                // 3. [重點] 呼叫 Apps Script API (POST)
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'login',
+                        employeeId: employeeId,
+                        password: password
+                    }),
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8', 
+                    }
+                });
 
-                // 4. 檢查使用者是否存在
-                if (!userSnap.exists()) {
-                    console.log("登入失敗：找不到使用者", employeeId);
-                    showMessage("人事號或密碼錯誤。");
-                    resetButton();
-                    return;
-                }
+                const result = await response.json();
 
-                // 5. 檢查密碼是否相符
-                const userData = userSnap.data();
-                if (userData.password === password) {
+                // 4. 檢查回應
+                if (result.status === 'success') {
                     // 登入成功！
-                    console.log("登入成功:", employeeId, userData.name);
-                    // [重點] 將人事號(ID) 存入 localStorage
-                    localStorage.setItem(LOGGED_IN_KEY, employeeId);
+                    const userId = result.data.userId;
+                    console.log("登入成功:", userId);
                     
-                    // 跳轉到會員中心
+                    localStorage.setItem(LOGGED_IN_KEY, userId);
+                    
                     window.location.href = 'member.html';
                     
                 } else {
-                    // 密碼錯誤
-                    console.log("登入失敗：密碼錯誤", employeeId);
-                    showMessage("人事號或密碼錯誤。");
+                    // 登入失敗
+                    console.log("登入失敗：", result.message);
+                    showMessage(result.message || "人事號或密碼錯誤。");
                     resetButton();
                 }
 
             } catch (error) {
-                // 6. 失敗
+                // 6. 網路或伺服器錯誤
                 console.error("登入時發生錯誤:", error);
                 showMessage("登入時發生網路錯誤，請稍後再試。");
                 resetButton();
@@ -195,7 +156,7 @@
         }
 
         // --- 5. 啟動應用程式 ---
-        initializeAppAndDb();
+        checkLoginStatus();
 
     </script>
 

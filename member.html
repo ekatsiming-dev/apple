@@ -150,7 +150,10 @@
                 </div>
 
             </div>
-        </div> </div> <script type="module">
+        </div> 
+    </div> 
+    
+    <script type="module">
         // [!!] 已填入您提供的 Apps Script 網址
         const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
         const appId = 'default-app-id'; 
@@ -314,6 +317,18 @@
                 receivedHtml = '<p class="text-gray-500 py-4">目前沒有收到的感謝。</p>';
             } else {
                 received.forEach(tx => {
+                    // [!! 修正 !!]
+                    // 根據新規則：
+                    // - 發送 'seed' (種子) -> 收到 '🍎' (蘋果)
+                    // - 發送 'apple' (蘋果) -> 收到 '🌟' (金蘋果)
+                    //
+                    // tx.type 是發送者送出的類型。
+                    // 所以我們要反轉顯示的圖示和顏色。
+                    
+                    const isAppleReceived = (tx.type === 'seed'); // 收到種子，變成蘋果
+                    const icon = isAppleReceived ? '🍎' : '🌟';
+                    const colorClass = isAppleReceived ? 'text-red-600' : 'text-yellow-600';
+
                     receivedHtml += `
                         <div class="py-4">
                             <div class="flex justify-between items-center mb-1">
@@ -321,8 +336,8 @@
                                 <span class="text-sm text-gray-500">${tx.timestamp}</span>
                             </div>
                             <p class="text-gray-700 mb-2">"${tx.message}"</p>
-                            <div class="text-right font-medium ${tx.type === 'apple' ? 'text-red-600' : 'text-yellow-600'}">
-                                + ${tx.amount} ${tx.type === 'apple' ? '🍎' : '🌟'}
+                            <div class="text-right font-medium ${colorClass}">
+                                + ${tx.amount} ${icon}
                             </div>
                         </div>
                     `;

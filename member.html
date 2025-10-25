@@ -4,23 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>感謝果園 - 會員中心</title>
-    <!-- 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 載入 Heroicons 圖示庫 -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <style>
-        /* 為了讓 tab 內容平滑顯示 */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
     </style>
 </head>
 <body class="bg-orange-50 font-sans leading-normal tracking-normal">
 
-    <!-- 頁面容器 -->
     <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8" id="main-container">
 
-        <!-- 頂部標題 -->
         <header class="text-center mb-8">
             <h1 class="text-5xl font-bold text-orange-600 flex items-center justify-center">
                 <ion-icon name="sparkles-outline" class="mr-3"></ion-icon>
@@ -29,17 +24,13 @@
             <p class="text-xl text-gray-700 mt-3">傳遞您的正向能量</p>
         </header>
 
-        <!-- 主內容網格 -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            <!-- 左側欄 (我的狀態 + 快速發送) -->
             <div class="md:col-span-1 space-y-6">
 
-                <!-- 區塊 C：我的狀態 -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-2xl font-bold text-gray-800">我的狀態</h2>
-                        <!-- [新增] 登出按鈕 -->
                         <button id="logout-button" title="登出" class="text-gray-500 hover:text-red-600 transition duration-150">
                             <ion-icon name="log-out-outline" class="text-2xl"></ion-icon>
                         </button>
@@ -65,7 +56,6 @@
                     <p class="text-xs text-gray-500 mt-4 text-center">每天登入會自動補充 1 顆種子 (上限 7 顆)</p>
                 </div>
 
-                <!-- 區塊 A：快速發送 -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">快速發送感謝</h2>
                     <form id="send-gift-form" class="space-y-4">
@@ -107,10 +97,8 @@
 
             </div>
 
-            <!-- 右側欄 (感謝歷程) -->
             <div class="md:col-span-2 space-y-6">
                 
-                <!-- 區塊 D/E：我的感謝歷程 -->
                 <div class="bg-white rounded-xl shadow-lg">
                     <div class="border-b border-gray-200">
                         <nav class="flex -mb-px px-6">
@@ -123,24 +111,19 @@
                         </nav>
                     </div>
                     
-                    <!-- 收到的感謝 內容 -->
                     <div id="tab-received" class="tab-content active p-6 space-y-4">
-                        <!-- 內容將由 JS 動態載入 -->
                         <div id="received-list" class="divide-y divide-gray-200">
                             <p class="text-gray-500 py-4">正在載入感謝紀錄...</p>
                         </div>
                     </div>
                     
-                    <!-- 送出的感謝 內容 -->
                     <div id="tab-sent" class="tab-content p-6 space-y-4">
-                        <!-- 內容將由 JS 動態載入 -->
                         <div id="sent-list" class="divide-y divide-gray-200">
                             <p class="text-gray-500 py-4">正在載入感謝紀錄...</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- [新增] 區塊 F：修改密碼 -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">修改密碼</h2>
                     <form id="change-password-form" class="space-y-4">
@@ -159,47 +142,23 @@
                     </form>
                 </div>
 
-                <!-- 導覽連結 -->
                 <div class="text-center mt-6">
-                    <!-- [FIX] 使用 ./ 相對路徑 -->
                     <a href="./dashboard.html" class="text-lg text-gray-700 hover:text-orange-600">&larr; 返回公開總覽頁</a>
                 </div>
 
             </div>
-        </div> <!-- End of Grid -->
-    </div> <!-- End of Container -->
+        </div>
+    </div>
 
 
-    <!-- 載入 Firebase SDK 並執行所有應用程式邏輯 -->
     <script type="module">
-        // 載入 Firebase 核心功能
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        // [修改] 移除 auth, 載入所有 firestore 功能
-        import { 
-            getFirestore, 
-            doc, 
-            getDoc, 
-            onSnapshot,
-            collection,
-            query,
-            where,
-            getDocs,
-            runTransaction,
-            serverTimestamp,
-            updateDoc // [新增] 載入 updateDoc 用於修改密碼
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // [!!] 已填入您提供的 Apps Script 網址
+        const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
+        const appId = 'default-app-id'; 
 
         // --- 1. 全域變數與 DOM 元素 ---
-        
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        
-        let app, db;
-        let currentUserId = null; // [修改] 儲存登入者 ID
-        let currentUserName = "訪客"; // [修改] 儲存登入者姓名
-        let userInventory = { seeds: 0, apples: 0 }; // 本地庫存快取
-        
-        // [修改] 登入狀態的 KEY
+        let currentUserId = null;
+        let userInventory = { seeds: 0, apples: 0 };
         const LOGGED_IN_KEY = `gg_user_${appId}`;
 
         // DOM 元素 (快速發送)
@@ -218,7 +177,7 @@
         const seedCountEl = document.getElementById('seed-count');
         const appleCountEl = document.getElementById('apple-count');
         const goldenAppleCountEl = document.getElementById('golden-apple-count');
-        const logoutButton = document.getElementById('logout-button'); // [新增]
+        const logoutButton = document.getElementById('logout-button'); 
 
         // DOM 元素 (感謝歷程)
         const tabButtons = document.querySelectorAll('.tab-btn');
@@ -226,24 +185,22 @@
         const receivedList = document.getElementById('received-list');
         const sentList = document.getElementById('sent-list');
 
-        // DOM 元素 (修改密碼) [新增]
+        // DOM 元素 (修改密碼)
         const passwordForm = document.getElementById('change-password-form');
         const newPasswordInput = document.getElementById('new-password');
         const confirmPasswordInput = document.getElementById('confirm-password');
         const passwordFormMessage = document.getElementById('password-form-message');
         const submitPasswordButton = document.getElementById('submit-password-button');
 
-        let selectedGiftType = null; // 'seed' 或 'apple'
+        let selectedGiftType = null;
 
-        // --- [修改] 2. 登入檢查與 Firebase 初始化 ---
+        // --- 2. 登入檢查與初始化 ---
 
         function checkLoginAndInit() {
             currentUserId = localStorage.getItem(LOGGED_IN_KEY);
             
             if (!currentUserId) {
-                // [重点] 登入守衛
                 console.log("未登入。");
-                // [FIX] 不跳轉，改為禁用頁面並顯示連結
                 document.body.innerHTML = `
                     <div class="flex items-center justify-center h-screen bg-orange-50">
                         <div class="text-center p-8 bg-white shadow-lg rounded-xl">
@@ -255,221 +212,134 @@
                         </div>
                     </div>
                 `;
-                return; // 停止執行
+                return;
             }
             
             console.log("已登入使用者 ID:", currentUserId);
-            initializeAppAndDb();
+            setupAppForUser(currentUserId);
         }
 
-        async function initializeAppAndDb() {
-            try {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                console.log("Firebase 初始化完成 (簡易模式)。");
-                
-                // 登入成功，啟動 App
-                setupAppForUser(currentUserId);
-                
-            } catch (error) { 
-                console.error("Firebase 初始化失敗:", error);
-                alert("無法連接到伺服器。");
-            }
-        }
+        // --- 3. 核心 App 邏輯 (GET) ---
 
-        // --- 3. 核心 App 邏輯 ---
-
-        function setupAppForUser(userId) {
+        async function setupAppForUser(userId) {
             console.log(`為 ${userId} 啟動應用...`);
 
-            // [修改] 資料庫路徑
-            const userDocRef = doc(db, `/artifacts/${appId}/users`, userId);
-            const usersColRef = collection(db, `/artifacts/${appId}/users`);
-            const transactionsColRef = collection(db, `/artifacts/${appId}/transactions`); // [資料流] 私密交易紀錄
+            try {
+                // 3.1 [修改] 呼叫 Apps Script (GET) 取得所有會員資料
+                const response = await fetch(`${API_URL}?action=get_member_data&userId=${userId}`);
+                const result = await response.json();
 
-            // 3.1 [即時] 監聽使用者狀態 (庫存)
-            onSnapshot(userDocRef, async (docSnap) => {
-                if (!docSnap.exists()) {
-                    console.error("錯誤：找不到使用者資料！");
-                    alert("找不到您的資料，請重新登入。");
-                    handleLogout(); // 找不到資料，強制登出
-                    return;
+                if (result.status === 'error') {
+                    throw new Error(result.message);
                 }
-                
-                const userData = docSnap.data();
-                currentUserName = userData.name;
-                
-                // 更新 "我的狀態" UI
-                userNameDisplay.innerText = userData.name;
-                seedCountEl.innerText = userData.seeds;
-                appleCountEl.innerText = userData.apples;
-                goldenAppleCountEl.innerText = userData.goldenApples;
+
+                const { myStats, colleagues, receivedList, sentList } = result.data;
+
+                // 3.2 更新 "我的狀態" UI
+                userNameDisplay.innerText = myStats.name;
+                seedCountEl.innerText = myStats.seeds;
+                appleCountEl.innerText = myStats.apples;
+                goldenAppleCountEl.innerText = myStats.goldenApples;
 
                 // 更新本地庫存
-                userInventory.seeds = userData.seeds;
-                userInventory.apples = userData.apples;
+                userInventory.seeds = myStats.seeds;
+                userInventory.apples = myStats.apples;
+
+                // 3.3 載入同事名單
+                loadColleagues(colleagues);
+
+                // 3.4 載入感謝歷程
+                loadTransactionHistory(receivedList, sentList);
                 
-                // 3.2 [新增] 檢查並發放每日種子
-                await checkAndGrantDailySeed(userDocRef, userData);
+                // 3.5 綁定登出按鈕
+                logoutButton.addEventListener('click', handleLogout);
 
-            }, (error) => {
-                console.error("監聽使用者狀態失敗:", error);
-            });
+                // 3.6 綁定修改密碼表單
+                passwordForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    handleChangePassword();
+                });
 
-            // 3.3 [一次性] 載入同事名單 (排除自己)
-            loadColleagues(usersColRef, userId);
-
-            // 3.4 [即時] 監聽感謝歷程 (只監聽私密的)
-            loadTransactionHistory(transactionsColRef, userId);
-            
-            // 3.5 [新增] 綁定登出按鈕
-            logoutButton.addEventListener('click', handleLogout);
-
-            // 3.6 [新增] 綁定修改密碼表單
-            passwordForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                handleChangePassword(userDocRef);
-            });
+            } catch (error) {
+                console.error("載入會員資料失敗:", error);
+                if (error.message.includes("找不到使用者資料")) {
+                    alert("您的登入資料已失效，請重新登入。");
+                    handleLogout();
+                } else {
+                    alert("無法連接到伺服器，請稍後再試。");
+                }
+            }
         }
 
         // --- 4. 功能實作 ---
-
-        // 4.1 檢查並發放每日種子
-        async function checkAndGrantDailySeed(userRef, userData) {
-            const lastSeedAt = userData.lastSeedAt?.toDate();
-            const now = new Date();
-            
-            // 檢查庫存是否已滿
-            if (userData.seeds >= 7) {
-                return;
-            }
-
-            // 檢查是否今天已經領過
-            if (lastSeedAt && lastSeedAt.toDateString() === now.toDateString()) {
-                return; // 今天領過了
-            }
-            
-            console.log("發放每日種子...");
-            try {
-                // [資料流修復] 發放種子只需要更新私密資料庫
-                await updateDoc(userRef, {
-                    seeds: userData.seeds + 1,
-                    lastSeedAt: serverTimestamp() // 記錄今天
-                });
-            } catch (error) {
-                console.error("發放種子失敗:", error);
-            }
-        }
         
-        // 4.2 載入同事名單
-        async function loadColleagues(usersColRef, myId) {
-            receiverSelect.innerHTML = '<option value="">載入中...</option>';
+        // 4.1 載入同事名單 (渲染)
+        function loadColleagues(colleagues) {
+            receiverSelect.innerHTML = '';
             let optionsHtml = '';
-            try {
-                const q = query(usersColRef); // 取得所有使用者
-                const querySnapshot = await getDocs(q);
-                
-                const colleagues = [];
-                querySnapshot.forEach((doc) => {
-                    if (doc.id !== myId) { // 排除我自己
-                        colleagues.push({ id: doc.id, name: doc.data().name });
-                    }
-                });
-
-                // [修改] 不排序，保持資料庫原始順序 (若要排序，在這裡 .sort())
-                if (colleagues.length === 0) {
-                   optionsHtml = '<option value="">目前沒有其他同事</option>'; 
-                } else {
-                    optionsHtml = '<option value="">-- 選擇感謝對象 --</option>';
-                    colleagues.forEach(colleague => {
-                        optionsHtml += `<option value="${colleague.id}">${colleague.name}</option>`;
-                    });
-                }
-                receiverSelect.innerHTML = optionsHtml;
-                
-            } catch (error) {
-                console.error("載入同事名單失敗:", error);
-                receiverSelect.innerHTML = '<option value="">載入失敗</option>';
-            }
-        }
-        
-        // 4.3 載入感謝歷程 (收到的 & 送出的)
-        function loadTransactionHistory(transactionsColRef, myId) {
-            // [資料流] 這裡讀取的是「私密」的 transactionsColRef
-            // 監聽 "收到的"
-            const receivedQuery = query(transactionsColRef, where("receiverId", "==", myId));
-            onSnapshot(receivedQuery, (snapshot) => {
-                let html = '';
-                if (snapshot.empty) {
-                    html = '<p class="text-gray-500 py-4">目前沒有收到的感謝。</p>';
-                } else {
-                    const docs = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-                    // [修改] 不排序，直接顯示 (若要排序，在這裡 .sort())
-                    docs.forEach(tx => {
-                        html += `
-                            <div class="py-4">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="font-semibold text-lg text-gray-800">${tx.senderName}</span>
-                                    <span class="text-sm text-gray-500">${formatTxTime(tx.createdAt)}</span>
-                                </div>
-                                <p class="text-gray-700 mb-2">"${tx.message}"</p>
-                                <div class="text-right font-medium ${tx.type === 'seed' ? 'text-red-600' : 'text-yellow-600'}">
-                                    + ${tx.amount} ${tx.type === 'seed' ? '🍎' : '🌟'}
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-                receivedList.innerHTML = html;
-            }, (error) => { console.error("載入收到的感謝失敗:", error); });
             
-            // 監聽 "送出的"
-            const sentQuery = query(transactionsColRef, where("senderId", "==", myId));
-            onSnapshot(sentQuery, (snapshot) => {
-                let html = '';
-                if (snapshot.empty) {
-                    html = '<p class="text-gray-500 py-4">目前沒有送出的感謝。</p>';
-                } else {
-                    const docs = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-                    // [修改] 不排序
-                    docs.forEach(tx => {
-                        html += `
-                            <div class="py-4">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="font-semibold text-lg text-gray-800">To: ${tx.receiverName}</span>
-                                    <span class="text-sm text-gray-500">${formatTxTime(tx.createdAt)}</span>
-                                </div>
-                                <p class="text-gray-700 mb-2">"${tx.message}"</p>
-                                <div class="text-right font-medium text-gray-600">
-                                    - ${tx.amount} ${tx.type === 'seed' ? '🌱' : '🍎'}
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-                sentList.innerHTML = html;
-            }, (error) => { console.error("載入送出的感謝失敗:", error); });
-        }
-        
-        function formatTxTime(timestamp) {
-            if (!timestamp) return '剛剛';
-            const date = timestamp.toDate();
-            const now = new Date();
-            const diffMs = now - date;
-            const diffHours = Math.floor(diffMs / 3600000);
-            
-            if (diffHours < 24) {
-                return `${diffHours} 小時前`;
+            if (colleagues.length === 0) {
+                optionsHtml = '<option value="">目前沒有其他同事</option>'; 
             } else {
-                return date.toLocaleDateString();
+                optionsHtml = '<option value="">-- 選擇感謝對象 --</option>';
+                colleagues.forEach(colleague => {
+                    optionsHtml += `<option value="${colleague.id}">${colleague.name}</option>`;
+                });
             }
+            receiverSelect.innerHTML = optionsHtml;
         }
         
-        // 4.4 [新增] 登出
+        // 4.2 載入感謝歷程 (渲染)
+        function loadTransactionHistory(received, sent) {
+            // 渲染 "收到的"
+            let receivedHtml = '';
+            if (!received || received.length === 0) {
+                receivedHtml = '<p class="text-gray-500 py-4">目前沒有收到的感謝。</p>';
+            } else {
+                received.forEach(tx => {
+                    receivedHtml += `
+                        <div class="py-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-semibold text-lg text-gray-800">${tx.senderName}</span>
+                                <span class="text-sm text-gray-500">${tx.timestamp}</span>
+                            </div>
+                            <p class="text-gray-700 mb-2">"${tx.message}"</p>
+                            <div class="text-right font-medium ${tx.type === 'apple' ? 'text-red-600' : 'text-yellow-600'}">
+                                + ${tx.amount} ${tx.type === 'apple' ? '🍎' : '🌟'}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            receivedList.innerHTML = receivedHtml;
+            
+            // 渲染 "送出的"
+            let sentHtml = '';
+            if (!sent || sent.length === 0) {
+                sentHtml = '<p class="text-gray-500 py-4">目前沒有送出的感謝。</p>';
+            } else {
+                sent.forEach(tx => {
+                    sentHtml += `
+                        <div class="py-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-semibold text-lg text-gray-800">To: ${tx.receiverName}</span>
+                                <span class="text-sm text-gray-500">${tx.timestamp}</span>
+                            </div>
+                            <p class="text-gray-700 mb-2">"${tx.message}"</p>
+                            <div class="text-right font-medium text-gray-600">
+                                - ${tx.amount} ${tx.type === 'seed' ? '🌱' : '🍎'}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            sentList.innerHTML = sentHtml;
+        }
+        
+        // 4.3 登出
         function handleLogout() {
             localStorage.removeItem(LOGGED_IN_KEY);
             console.log("已登出");
-            // [FIX] 不跳轉，改為顯示訊息和連結
             document.body.innerHTML = `
                 <div class="flex items-center justify-center h-screen bg-orange-50">
                     <div class="text-center p-8 bg-white shadow-lg rounded-xl">
@@ -483,13 +353,11 @@
             `;
         }
         
-        // 4.5 [新增] 修改密碼
-        async function handleChangePassword(userRef) {
-            // [資料流] 修改密碼只需要更新私密資料庫
+        // 4.4 [修改] 修改密碼 (POST)
+        async function handleChangePassword() {
             const newPassword = newPasswordInput.value;
             const confirmPassword = confirmPasswordInput.value;
             
-            // 檢查
             if (!newPassword || !confirmPassword) {
                 showPasswordMessage("密碼欄位不可為空。", 'error');
                 return;
@@ -498,27 +366,37 @@
                 showPasswordMessage("兩次輸入的新密碼不相符。", 'error');
                 return;
             }
-            if (newPassword.length < 4) { // 簡易的長度檢查
+            if (newPassword.length < 4) { 
                 showPasswordMessage("密碼長度至少需要 4 個字元。", 'error');
                 return;
             }
 
-            // 鎖定按鈕
             submitPasswordButton.disabled = true;
             submitPasswordButton.innerText = "儲存中...";
             
             try {
-                // [重點] 更新資料庫中的密碼 (明文)
-                await updateDoc(userRef, {
-                    password: newPassword
+                // 呼叫 Apps Script (POST)
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'change_password',
+                        userId: currentUserId,
+                        newPassword: newPassword
+                    }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
                 });
-                
-                showPasswordMessage("密碼更新成功！", 'success');
-                passwordForm.reset(); // 清空表單
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showPasswordMessage("密碼更新成功！", 'success');
+                    passwordForm.reset();
+                } else {
+                    throw new Error(result.message);
+                }
 
             } catch (error) {
                 console.error("修改密碼失敗:", error);
-                showPasswordMessage("更新失敗，請稍後再試。", 'error');
+                showPasswordMessage(error.message || "更新失敗，請稍後再試。", 'error');
             }
             
             submitPasswordButton.disabled = false;
@@ -527,211 +405,104 @@
         
         function showPasswordMessage(message, type) {
             passwordFormMessage.textContent = message;
-            if (type === 'error') {
-                passwordFormMessage.className = 'text-red-600 text-sm h-5';
-            } else if (type === 'success') {
-                passwordFormMessage.className = 'text-green-600 text-sm h-5';
-            } else {
-                passwordFormMessage.className = 'text-sm h-5';
-            }
+            passwordFormMessage.className = `text-${type === 'success' ? 'green' : 'red'}-600 text-sm h-5`;
         }
 
         // --- 5. 表單與 UI 互動邏輯 ---
 
-        // 5.1 感謝表單提交
+        // 5.1 [修改] 感謝表單提交 (POST)
         sendGiftForm.addEventListener('submit', (e) => {
             e.preventDefault();
             handleGiftSubmit();
         });
 
         async function handleGiftSubmit() {
-            // 獲取表單資料
             const receiverId = receiverSelect.value;
             const message = giftMessage.value.trim();
             const amount = parseInt(giftAmountInput.value, 10);
-            const type = selectedGiftType; // 'seed' 或 'apple'
+            const type = selectedGiftType;
 
             // 驗證
-            if (!receiverId) {
-                showGiftMessage("請選擇一位感謝對象。");
-                return;
-            }
-            if (!message) {
-                showGiftMessage("感謝訊息不可為空。");
-                return;
-            }
-            if (!type) {
-                showGiftMessage("請選擇要送出的禮物類型。");
-                return;
-            }
-            if (isNaN(amount) || amount < 1) {
-                showGiftMessage("數量必須大於 0。");
-                return;
-            }
-
-            // 檢查庫存
+            if (!receiverId) { showGiftMessage("請選擇一位感謝對象。"); return; }
+            if (!message) { showGiftMessage("感謝訊息不可為空。"); return; }
+            if (!type) { showGiftMessage("請選擇要送出的禮物類型。"); return; }
+            if (isNaN(amount) || amount < 1) { showGiftMessage("數量必須大於 0。"); return; }
             if (type === 'seed' && userInventory.seeds < amount) {
-                showGiftMessage(`種子不足 (您只有 ${userInventory.seeds} 顆)。`);
-                return;
+                showGiftMessage(`種子不足 (您只有 ${userInventory.seeds} 顆)。`); return;
             }
             if (type === 'apple' && userInventory.apples < amount) {
-                showGiftMessage(`蘋果不足 (您只有 ${userInventory.apples} 顆)。`);
-                return;
+                showGiftMessage(`蘋果不足 (您只有 ${userInventory.apples} 顆)。`); return;
             }
 
-            // 鎖定表單
             submitGiftButton.disabled = true;
             submitGiftButton.innerText = "傳送中...";
             showGiftMessage("");
-
-            // [資料流修復] 定義所有需要用到的路徑
-            // 私密路徑
-            const senderRef = doc(db, `/artifacts/${appId}/users`, currentUserId);
-            const receiverRef = doc(db, `/artifacts/${appId}/users`, receiverId);
-            const transactionsColRef = collection(db, `/artifacts/${appId}/transactions`);
-            // 公開路徑
-            const publicSenderRef = doc(db, `/artifacts/${appId}/public/data/users`, currentUserId);
-            const publicReceiverRef = doc(db, `/artifacts/${appId}/public/data/users`, receiverId);
-            const publicTransactionsColRef = collection(db, `/artifacts/${appId}/public/data/transactions`);
             
             try {
-                // 執行 Firestore 交易
-                await runTransaction(db, async (transaction) => {
-                    // 1. 讀取「私密」發送者資料
-                    const senderSnap = await transaction.get(senderRef);
-                    if (!senderSnap.exists()) {
-                        throw "找不到發送者資料。";
-                    }
-                    const senderData = senderSnap.data();
-
-                    // 2. 讀取「私密」接收者資料
-                    const receiverSnap = await transaction.get(receiverRef);
-                    if (!receiverSnap.exists()) {
-                        throw "找不到接收者資料。";
-                    }
-                    const receiverData = receiverSnap.data();
-                    
-                    // 3. 再次檢查庫存 (雙重保險)
-                    if (type === 'seed' && senderData.seeds < amount) {
-                        throw `種子不足 (您只有 ${senderData.seeds} 顆)。`;
-                    }
-                    if (type === 'apple' && senderData.apples < amount) {
-                        throw `蘋果不足 (您只有 ${senderData.apples} 顆)。`;
-                    }
-
-                    // 4. 計算更新
-                    let privateSenderUpdates = {};
-                    let privateReceiverUpdates = {};
-                    let publicSenderUpdates = {}; // [資料流]
-                    let publicReceiverUpdates = {}; // [資料流]
-
-                    if (type === 'seed') {
-                        // 私密更新
-                        privateSenderUpdates = {
-                            seeds: senderData.seeds - amount,
-                            gardenerPoints: (senderData.gardenerPoints || 0) + amount
-                        };
-                        privateReceiverUpdates = {
-                            apples: receiverData.apples + amount
-                        };
-                        // 公開更新
-                        publicSenderUpdates = {
-                            gardenerPoints: (senderData.gardenerPoints || 0) + amount
-                        };
-                        publicReceiverUpdates = {
-                            apples: receiverData.apples + amount
-                        };
-                    } else { // type === 'apple'
-                        // 私密更新
-                        privateSenderUpdates = {
-                            apples: senderData.apples - amount,
-                            gardenerPoints: (senderData.gardenerPoints || 0) + (amount * 5) // 送蘋果 5 倍積分
-                        };
-                        privateReceiverUpdates = {
-                            goldenApples: receiverData.goldenApples + amount
-                        };
-                        // 公開更新
-                        publicSenderUpdates = {
-                            gardenerPoints: (senderData.gardenerPoints || 0) + (amount * 5)
-                        };
-                        publicReceiverUpdates = {
-                            goldenApples: receiverData.goldenApples + amount
-                        };
-                    }
-
-                    // 5. 寫入「私密」更新
-                    transaction.update(senderRef, privateSenderUpdates);
-                    transaction.update(receiverRef, privateReceiverUpdates);
-
-                    // 6. [資料流修復] 寫入「公開」更新
-                    //    注意：我們使用 merge: true 來確保如果文件尚不存在 (雖然 admin 應該已建立)，它會被建立
-                    transaction.set(publicSenderRef, publicSenderUpdates, { merge: true });
-                    transaction.set(publicReceiverRef, publicReceiverUpdates, { merge: true });
-
-                    // 7. 寫入「私密」交易紀錄
-                    const newTxRef = doc(transactionsColRef); // 自動產生 ID
-                    transaction.set(newTxRef, {
+                // 呼叫 Apps Script (POST)
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'send_gift',
                         senderId: currentUserId,
-                        senderName: currentUserName,
                         receiverId: receiverId,
-                        receiverName: receiverData.name,
                         type: type,
                         amount: amount,
-                        message: message,
-                        createdAt: serverTimestamp()
-                    });
-
-                    // 8. [資料流修復] 寫入「公開」交易紀錄 (匿名)
-                    const newPublicTxRef = doc(publicTransactionsColRef); // 自動產生 ID
-                    transaction.set(newPublicTxRef, {
-                        message: message, // 只有訊息
-                        createdAt: serverTimestamp() // 和時間
-                        // [注意] 這裡完全不包含 senderId, senderName, receiverId, receiverName
-                    });
+                        message: message
+                    }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
                 });
+                
+                const result = await response.json();
 
-                // 交易成功
-                console.log("交易成功！");
-                sendGiftForm.reset(); // 重設表單
-                selectedGiftType = null;
-                giftTypeButtons.forEach(btn => btn.classList.remove('bg-yellow-400', 'bg-red-400', 'ring-2', 'ring-offset-1', 'ring-orange-500'));
-                giftAmountInput.value = 1;
-                showGiftMessage("感謝已成功送出！", 'success');
+                if (result.status === 'success') {
+                    // 交易成功
+                    console.log("交易成功！");
+                    sendGiftForm.reset();
+                    selectedGiftType = null;
+                    giftTypeButtons.forEach(btn => btn.classList.remove('bg-yellow-400', 'bg-red-400', 'ring-2', 'ring-offset-1', 'ring-orange-500'));
+                    giftAmountInput.value = 1;
+                    showGiftMessage("感謝已成功送出！", 'success');
+                    
+                    // [重要] 更新本地庫存
+                    if (type === 'seed') {
+                        userInventory.seeds -= amount;
+                    } else {
+                        userInventory.apples -= amount;
+                    }
+                    seedCountEl.innerText = userInventory.seeds;
+                    appleCountEl.innerText = userInventory.apples;
+                    
+                    // 重新載入歷程
+                    setupAppForUser(currentUserId); 
+                    
+                } else {
+                    // 交易失敗
+                    throw new Error(result.message);
+                }
                 
             } catch (error) {
-                // 交易失敗
                 console.error("交易失敗:", error);
-                // 顯示自定義的錯誤訊息
-                showGiftMessage(typeof error === 'string' ? error : "傳送失敗，請稍後再試。", 'error');
+                showGiftMessage(error.message || "傳送失敗，請稍後再試。", 'error');
             }
 
-            // 解鎖表單
             submitGiftButton.disabled = false;
             submitGiftButton.innerText = "送出感謝";
         }
         
         function showGiftMessage(message, type = 'error') {
             giftFormMessage.textContent = message;
-            if (type === 'error') {
-                giftFormMessage.className = 'text-red-600 text-sm h-5';
-            } else if (type === 'success') {
-                giftFormMessage.className = 'text-green-600 text-sm h-5';
-            }
+            giftFormMessage.className = `text-${type === 'success' ? 'green' : 'red'}-600 text-sm h-5`;
         }
 
-        // 5.2 禮物類型按鈕
+        // 5.2 禮物類型按鈕 (邏輯不變)
         giftTypeButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // 移除所有按鈕的高亮
                 giftTypeButtons.forEach(btn => {
                     btn.classList.remove('bg-yellow-400', 'bg-red-400', 'ring-2', 'ring-offset-1', 'ring-orange-500');
                     btn.classList.add('bg-gray-200');
                 });
-                
-                // 設置選中的類型
                 selectedGiftType = button.dataset.giftType;
-                
-                // 高亮選中的按鈕
                 button.classList.remove('bg-gray-200');
                 if (selectedGiftType === 'seed') {
                     button.classList.add('bg-yellow-400', 'ring-2', 'ring-offset-1', 'ring-orange-500');
@@ -741,32 +512,26 @@
             });
         });
         
-        // 5.3 數量按鈕
+        // 5.3 數量按鈕 (邏輯不變)
         amountDecrease.addEventListener('click', () => {
             let currentAmount = parseInt(giftAmountInput.value, 10);
-            if (currentAmount > 1) {
-                giftAmountInput.value = currentAmount - 1;
-            }
+            if (currentAmount > 1) { giftAmountInput.value = currentAmount - 1; }
         });
         amountIncrease.addEventListener('click', () => {
             let currentAmount = parseInt(giftAmountInput.value, 10);
             giftAmountInput.value = currentAmount + 1;
         });
         
-        // 5.4 歷程分頁
+        // 5.4 歷程分頁 (邏輯不變)
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabId = button.dataset.tab;
-                
-                // 更新按鈕樣式
                 tabButtons.forEach(btn => {
                     btn.classList.remove('border-orange-500', 'text-orange-600');
                     btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
                 });
                 button.classList.add('border-orange-500', 'text-orange-600');
                 button.classList.remove('border-transparent', 'text-gray-500');
-                
-                // 顯示對應內容
                 tabContents.forEach(content => {
                     if (content.id === `tab-${tabId}`) {
                         content.classList.add('active');
@@ -778,7 +543,7 @@
         });
 
         // --- 6. 啟動應用程式 ---
-        checkLoginAndInit(); // [修改] 啟動時先檢查登入
+        checkLoginAndInit(); // 啟動時先檢查登入
 
     </script>
 

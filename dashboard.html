@@ -4,42 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>感謝果園 - 總覽</title>
-    <!-- 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 載入 Heroicons 圖示庫 -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <style>
-        /* 簡單的自訂樣式，讓 emoji 更清晰 */
-        .fruit-icon {
-            font-size: 1.25rem;
-            margin-right: 0.25rem;
-        }
-        
-        /* [保留] 視差滾動的背景圖 */
-        .parallax-hero {
-            background-image: url('apple.png');
-        }
+        .fruit-icon { font-size: 1.25rem; margin-right: 0.25rem; }
+        .parallax-hero { background-image: url('apple.png'); }
     </style>
 </head>
-<body class="bg-orange-50 font-sans leading-normal tracking-normal"> <!-- [風格] 暖色背景 -->
+<body class="bg-orange-50 font-sans leading-normal tracking-normal">
 
-    <!-- [修改] 區塊 1：整合式英雄區塊 (包含 CTA) -->
-    <!-- [!!] 將 bg-center 改為 bg-bottom 來顯示圖片下半部 -->
     <div class="parallax-hero w-full h-96 lg:h-[500px] bg-cover bg-bottom bg-fixed relative shadow-lg">
-        <!-- 半透明遮罩 (確保文字可讀性) -->
         <div class="absolute inset-0 bg-black/50"></div>
-        
-        <!-- 標題內容 (置中) -->
         <div class="relative z-10 max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-center items-center text-center">
-            <!-- 標題 -->
             <h1 class="text-5xl font-bold text-white flex items-center justify-center shadow-md">
                 <span class="fruit-icon text-5xl mr-3">🍎</span> 感謝果園
             </h1>
-            <!-- 副標題 -->
             <p class="text-xl text-gray-200 mt-3 shadow-md">團隊正向能量儀表板</p>
-            
-            <!-- [!!] 登入按鈕被移到這裡 -->
             <a href="member.html" class="mt-10 px-8 py-4 bg-orange-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-orange-700 transition duration-300 transform hover:-translate-y-1">
                 <ion-icon name="log-in-outline" class="mr-2"></ion-icon>
                 登入並發送感謝
@@ -48,18 +29,13 @@
     </div>
 
 
-    <!-- [修改] 區塊 2：主內容 (置中) -->
-    <!-- 這個區塊現在在 Hero 區塊的下方 -->
     <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col items-center"> 
         
-        <!-- 區塊 B：團隊成果 (置中) -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full">
             <div class="p-6 sm:p-8">
                 
-                <!-- 分頁標籤 -->
                 <div class="border-b border-gray-200">
                     <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                        <!-- [風格] 預設選中 "讚賞牆" -->
                         <a href="#" id="tab-wall" class="tab-link border-orange-500 text-orange-600 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg" aria-current="page">
                             <ion-icon name="chatbubbles-outline" class="mr-1"></ion-icon>
                             讚賞牆 (匿名)
@@ -75,19 +51,13 @@
                     </nav>
                 </div>
 
-                <!-- 內容區 -->
                 <div class="mt-6 min-h-[400px]">
-                    <!-- 內容：讚賞牆 (預設) -->
                     <div id="content-wall" class="tab-content space-y-4">
                         <p class="placeholder-text text-gray-500 text-center p-8">載入最新的感謝留言中...</p>
                     </div>
-
-                    <!-- 內容：慷慨榜 (預設隱藏) -->
                     <div id="content-generous" class="tab-content space-y-3" style="display: none;">
                         <p class="placeholder-text text-gray-500 text-center p-8">載入慷慨榜中...</p>
                     </div>
-
-                    <!-- 內容：成果榜 (預設隱藏) -->
                     <div id="content-fruitful" class="tab-content space-y-3" style="display: none;">
                         <p class="placeholder-text text-gray-500 text-center p-8">載入成果榜中...</p>
                     </div>
@@ -96,32 +66,12 @@
             </div>
         </div>
         
-        <!-- [!!] 登入按鈕已從這裡移除 -->
+    </div>
 
-    </div> <!-- End of Container -->
-
-
-    <!-- 載入 Firebase SDK 並執行所有應用程式邏輯 -->
     <script type="module">
-        // 載入 Firebase 核心功能
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            onSnapshot, 
-            collection, 
-            query, 
-            where,
-            limit
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // --- 1. 全域變數與 DOM 元素 ---
-        
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let app, db, auth;
+        // [!!] 已填入您提供的 Apps Script 網址
+        const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
+        const appId = 'default-app-id';
         
         // DOM 元素
         const tabs = document.querySelectorAll('.tab-link');
@@ -131,93 +81,45 @@
         const generousContent = document.getElementById('content-generous');
         const fruitfulContent = document.getElementById('content-fruitful');
 
-        let wallUnsubscribe = () => {};
-        let usersUnsubscribe = () => {};
+        // --- 2. [修改] 初始化，改用 fetch (GET) ---
 
-        // --- 2. Firebase 初始化與認證 ---
-
-        async function initializeAppAndAuth() {
+        async function initializeDashboard() {
             try {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                await setPersistence(auth, browserLocalPersistence);
-                console.log("Firebase 初始化完成。");
+                // 呼叫 Apps Script API (GET)
+                const response = await fetch(`${API_URL}?action=get_dashboard_data`);
+                const result = await response.json();
 
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        console.log("使用者已登入 (匿名或 Custom Token):", user.uid);
-                        startRealtimeListeners();
-                    } else {
-                        console.log("使用者未登入，嘗試自動登入...");
-                        await signIn();
-                    }
-                });
-            } catch (error) {
-                console.error("Firebase 初始化失敗:", error);
-                alert("無法連接到伺服器，請稍後再試。");
-            }
-        }
-
-        async function signIn() {
-            try {
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                    console.log("使用 Custom Token 登入成功。");
+                if (result.status === 'success') {
+                    console.log("成功取得總覽資料");
+                    const { generousList, fruitfulList, wallList } = result.data;
+                    renderWallList(wallList);
+                    renderGenerousList(generousList);
+                    renderFruitfulList(fruitfulList);
                 } else {
-                    await signInAnonymously(auth);
-                    console.log("使用匿名登入成功。");
+                    throw new Error(result.message);
                 }
             } catch (error) {
-                console.error("登入失敗:", error);
+                console.error("總覽資料載入失敗:", error);
+                wallContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗: ${error.message}</p>`;
+                generousContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗</p>`;
+                fruitfulContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗</p>`;
             }
         }
 
-        // --- 3. [新增] 即時資料監聽 ---
-
-        function startRealtimeListeners() {
-            wallUnsubscribe();
-            usersUnsubscribe();
-
-            // 監聽「讚賞牆」 (最新的 10 筆交易)
-            const wallQuery = query(
-                collection(db, `/artifacts/${appId}/public/data/transactions`),
-                limit(10) 
-            );
-            wallUnsubscribe = onSnapshot(wallQuery, (snapshot) => {
-                const items = [];
-                snapshot.forEach(doc => items.push(doc.data()));
-                items.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
-                renderWallList(items);
-            });
-
-            // 監聽「所有使用者」資料 (用於慷慨榜與成果榜)
-            const usersQuery = query(
-                collection(db, `/artifacts/${appId}/public/data/users`)
-            );
-            usersUnsubscribe = onSnapshot(usersQuery, (snapshot) => {
-                const users = [];
-                snapshot.forEach(doc => users.push(doc.data()));
-                renderGenerousList(users);
-                renderFruitfulList(users);
-            });
-        }
-
-        // --- 4. [新增] 渲染 DOM 內容 ---
+        // --- 4. 渲染 DOM 內容 (邏輯不變) ---
 
         function renderWallList(items) {
             wallContent.innerHTML = ''; 
-            if (items.length === 0) {
+            if (!items || items.length === 0) {
                 wallContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">目前還沒有任何感謝留言。</p>`;
                 return;
             }
             items.forEach(item => {
-                const timestamp = item.createdAt ? item.createdAt.toDate().toLocaleString('zh-TW', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '剛剛';
                 const card = document.createElement('div');
                 card.className = "p-5 bg-yellow-50 rounded-lg border border-yellow-200 shadow-sm";
                 card.innerHTML = `
                     <p class="text-lg text-gray-800">"${item.message}"</p>
-                    <p class="text-sm text-gray-500 mt-2 text-right">${timestamp}</p>
+                    <p class="text-sm text-gray-500 mt-2 text-right">${item.timestamp}</p>
                 `;
                 wallContent.appendChild(card);
             });
@@ -225,9 +127,12 @@
 
         function renderGenerousList(users) {
             generousContent.innerHTML = ''; 
-            users.sort((a, b) => (b.gardenerPoints || 0) - (a.gardenerPoints || 0));
+            if (!users || users.length === 0) {
+                generousContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">慷慨榜載入中...</p>`;
+                return;
+            }
             
-            users.slice(0, 10).forEach((user, index) => { 
+            users.forEach((user, index) => { 
                 const rank = index + 1;
                 const card = document.createElement('div');
                 card.className = "flex items-center p-4 bg-gray-50 rounded-lg";
@@ -242,14 +147,12 @@
 
         function renderFruitfulList(users) {
             fruitfulContent.innerHTML = ''; 
-            users.sort((a, b) => {
-                if ((b.goldenApples || 0) !== (a.goldenApples || 0)) {
-                    return (b.goldenApples || 0) - (a.goldenApples || 0);
-                }
-                return (b.apples || 0) - (a.apples || 0);
-            });
+            if (!users || users.length === 0) {
+                fruitfulContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">成果榜載入中...</p>`;
+                return;
+            }
             
-            users.slice(0, 10).forEach((user, index) => { 
+            users.forEach((user, index) => { 
                 const rank = index + 1;
                 const card = document.createElement('div');
                 card.className = "flex items-center p-4 bg-yellow-50 rounded-lg";
@@ -265,7 +168,7 @@
             });
         }
 
-        // --- 5. 頁面互動 (分頁切換) ---
+        // --- 5. 頁面互動 (分頁切換) (邏輯不變) ---
         
         document.addEventListener('DOMContentLoaded', () => {
             tabs.forEach(tab => {
@@ -294,10 +197,9 @@
                 });
             });
 
-            initializeAppAndAuth();
+            initializeDashboard();
         });
     </script>
 
 </body>
 </html>
-

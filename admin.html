@@ -4,116 +4,531 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>感謝果園 - 管理後台</title>
+    <!-- [!! 新增 !!] 加入 Favicon -->
+    <link rel="icon" type="image/png" href="apple-f.png">
+    <link rel="apple-touch-icon" href="apple-f.png">
+    
+    <!-- 載入 Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- [!! 新增 !!] 載入自訂配色方案 (方案四) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        customAppleYellow: {
+                            50: '#FCFAF5',  // 更淡的奶油黃 (背景)
+                            500: '#B34B62', // 玫瑰紅 (邊框/焦點)
+                            600: '#9D324E', // 酒紅色 (主要按鈕/文字)
+                            700: '#6D2833'  // 深栗色 (按鈕 Hover)
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    
+    <!-- [!! 新增 !!] Admin 頁面專用樣式 -->
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Modal 樣式 */
+        dialog {
+            transition: opacity 0.2s ease-in-out;
+        }
+        dialog[open] {
+            display: flex;
+        }
+        /* Modal 背景 */
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+            transition: backdrop-filter 0.2s ease-in-out;
+            backdrop-filter: blur(3px);
+        }
+        /* 用於 Modal 關閉動畫 (如果瀏覽器支援) */
+        dialog.closing {
+            opacity: 0;
+        }
+        dialog.closing::backdrop {
+            backdrop-filter: blur(0px);
+            background: rgba(0, 0, 0, 0);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+<!-- [!! 修改 !!] 替換背景色 -->
+<body class="bg-customAppleYellow-50 font-sans leading-normal tracking-normal">
 
-    <div class="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8 mt-10">
+    <!-- [!! 修改 !!] 擴大寬度以容納儀表板 -->
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 my-10">
         
         <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800 flex items-center justify-center">
+            <!-- [!! 修改 !!] 響應式字體 & 替換顏色 -->
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 flex items-center justify-center">
                 <ion-icon name="server-outline" class="mr-3"></ion-icon>
                 感謝果園 - 管理後台
             </h1>
-            <p class="text-lg text-gray-600 mt-2">批次建立團隊成員</p>
         </header>
 
+        <!-- [!! 新增 !!] Tab 結構 -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full">
-            <div class="p-6 sm:p-8">
+            
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px px-6" aria-label="Tabs">
+                    <button id="tab-btn-management" data-tab="management" class="tab-btn border-customAppleYellow-500 text-customAppleYellow-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg" aria-current="page">
+                        <ion-icon name="list-outline" class="mr-1"></ion-icon>
+                        成員管理
+                    </button>
+                    <button id="tab-btn-batch" data-tab="batch" class="tab-btn border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap ml-8 py-4 px-1 border-b-2 font-medium text-lg">
+                        <ion-icon name="people-outline" class="mr-1"></ion-icon>
+                        批次建立
+                    </button>
+                </nav>
+            </div>
+
+            <!-- [!! 新增 !!] Tab 1: 成員管理 -->
+            <div id="content-management" class="tab-content active p-6 sm:p-8">
+                <div class="mb-4">
+                    <label for="search-member" class="sr-only">搜尋成員</label>
+                    <input type="text" id="search-member" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500" placeholder="搜尋姓名或人事號...">
+                </div>
                 
+                <div id="member-list-container" class="space-y-3">
+                    <!-- 成員列表將由 JS 動態載入 -->
+                    <p id="management-loading" class="text-center text-gray-500 p-8">載入成員資料中...</p>
+                </div>
+            </div>
+
+            <!-- [!! 新增 !!] Tab 2: 批次建立 (放入舊表單) -->
+            <div id="content-batch" class="tab-content p-6 sm:p-8">
                 <form id="admin-form">
                     <div class="space-y-5">
                         <div>
-                            <label for="member-list" class="block text-lg font-medium text-gray-700 mb-2">成員列表 (人事號,姓名)</label>
-                            <textarea id="member-list" name="member-list" rows="10" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg" placeholder="請在此貼上成員列表，一行一個...&#10;格式：人事號,姓名&#10;(預設密碼將自動設為人事號)&#10;例如：&#10;1001,王大明&#10;1002,陳小花"></textarea>
+                            <label for="member-list-textarea" class="block text-lg font-medium text-gray-700 mb-2">成員列表 (人事號,姓名)</label>
+                            <textarea id="member-list-textarea" name="member-list" rows="10" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500 text-base" placeholder="請在此貼上成員列表，一行一個...&#10;格式：人事號,姓名&#10;(預設密碼將自動設為人事號)&#10;例如：&#10;1001,王大明&#10;1002,陳小花"></textarea>
                             <p class="text-sm text-gray-500 mt-2">注意：程式會自動過濾空白行，並使用「人事號」作為唯一ID。</p>
                         </div>
                         
-                        <div id="form-message" class="text-sm h-5"></div> <div>
-                            <button type="submit" id="submit-button" class="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-lg shadow-sm text-xl font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-200 disabled:opacity-50">
+                        <div id="form-message" class="text-sm h-5"></div> 
+                        <div>
+                            <!-- [!! 修改 !!] 替換按鈕顏色 -->
+                            <button type="submit" id="submit-button" class="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-lg shadow-sm text-xl font-medium text-white bg-customAppleYellow-600 hover:bg-customAppleYellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-customAppleYellow-500 transition duration-200 disabled:opacity-50">
                                 <ion-icon name="people-outline" class="mr-2"></ion-icon>
                                 批次建立成員
                             </button>
                         </div>
                     </div>
                 </form>
-
             </div>
         </div>
 
         <div class="text-center mt-8 space-x-6">
-            <a href="dashboard.html" class="text-lg text-gray-700 hover:text-orange-600">&larr; 返回總覽頁</a>
-            <a href="member.html" class="text-lg text-gray-700 hover:text-orange-600">前往會員中心 &rarr;</a>
+            <!-- [!! 修改 !!] 替換連結顏色 -->
+            <a href="dashboard.html" class="text-lg text-gray-700 hover:text-customAppleYellow-600">&larr; 返回總覽頁</a>
+            <a href="member.html" class="text-lg text-gray-700 hover:text-customAppleYellow-600">前往會員中心 &rarr;</a>
         </div>
-
     </div>
+
+    <!-- [!! 新增 !!] 編輯成員 Modal -->
+    <dialog id="edit-user-modal" class="p-0 rounded-xl shadow-xl max-w-md w-full m-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">編輯成員</h2>
+                <button id="close-edit-modal-btn" class="text-gray-400 hover:text-gray-600">
+                    <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+                </button>
+            </div>
+            
+            <form id="edit-user-form">
+                <input type="hidden" id="edit-user-id">
+                <h3 id="edit-user-name" class="text-xl font-semibold text-gray-700 mb-4"></h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="edit-seeds" class="block text-sm font-medium text-gray-700">種子 🌱</label>
+                        <input type="number" id="edit-seeds" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500" min="0">
+                    </div>
+                    <div>
+                        <label for="edit-apples" class="block text-sm font-medium text-gray-700">蘋果 🍎</label>
+                        <input type="number" id="edit-apples" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500" min="0">
+                    </div>
+                    <div>
+                        <label for="edit-golden-apples" class="block text-sm font-medium text-gray-700">金蘋果 🌟</label>
+                        <input type="number" id="edit-golden-apples" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500" min="0">
+                    </div>
+                    
+                    <div id="edit-form-message" class="text-sm h-5 text-red-600"></div>
+
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancel-edit-modal-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium">取消</button>
+                        <button type="submit" id="submit-edit-modal-btn" class="px-4 py-2 bg-customAppleYellow-600 text-white rounded-md hover:bg-customAppleYellow-700 font-medium disabled:opacity-50">儲存變更</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- [!! 新增 !!] 通用確認 Modal -->
+    <dialog id="confirm-modal" class="p-0 rounded-xl shadow-xl max-w-sm w-full m-auto">
+        <div class="p-6">
+            <h2 id="confirm-title" class="text-2xl font-bold text-gray-800 mb-4">請確認</h2>
+            <p id="confirm-message" class="text-gray-700 mb-6">您確定要執行此操作嗎？</p>
+            <div class="flex justify-end space-x-3">
+                <button id="confirm-cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium">取消</button>
+                <!-- [!! 修改 !!] 替換按鈕顏色 -->
+                <button id="confirm-ok-btn" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 font-medium">確定</button>
+            </div>
+        </div>
+    </dialog>
+
 
     <script type="module">
         // [!!] 已填入您提供的 Apps Script 網址
         const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
         const appId = 'default-app-id';
+        const LOGGED_IN_KEY = `gg_user_${appId}`;
+        const IS_ADMIN_KEY = `gg_admin_${appId}`; 
 
-        // DOM 元素
-        const form = document.getElementById('admin-form');
-        const memberList = document.getElementById('member-list');
-        const submitButton = document.getElementById('submit-button');
-        const messageDiv = document.getElementById('form-message');
+        let currentAdminId = null;
+        let allUsersData = []; // 用於快取，支援搜尋
 
-        // --- 核心功能：批次建立 ---
+        // --- DOM 元素 (新) ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        const managementLoading = document.getElementById('management-loading');
+        const memberListContainer = document.getElementById('member-list-container');
+        const searchInput = document.getElementById('search-member');
+
+        // --- DOM 元素 (舊表單) ---
+        const batchForm = document.getElementById('admin-form');
+        const memberListTextarea = document.getElementById('member-list-textarea');
+        const batchSubmitButton = document.getElementById('submit-button');
+        const batchFormMessage = document.getElementById('form-message');
+
+        // --- DOM 元素 (編輯 Modal) ---
+        const editModal = document.getElementById('edit-user-modal');
+        const editForm = document.getElementById('edit-user-form');
+        const editUserId = document.getElementById('edit-user-id');
+        const editUserName = document.getElementById('edit-user-name');
+        const editSeeds = document.getElementById('edit-seeds');
+        const editApples = document.getElementById('edit-apples');
+        const editGoldenApples = document.getElementById('edit-golden-apples');
+        const editFormMessage = document.getElementById('edit-form-message');
+        const closeEditModalBtn = document.getElementById('close-edit-modal-btn');
+        const cancelEditModalBtn = document.getElementById('cancel-edit-modal-btn');
+        const submitEditModalBtn = document.getElementById('submit-edit-modal-btn');
+
+        // --- DOM 元素 (確認 Modal) ---
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmTitle = document.getElementById('confirm-title');
+        const confirmMessage = document.getElementById('confirm-message');
+        const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+        const confirmOkBtn = document.getElementById('confirm-ok-btn');
+        let confirmCallback = null;
+
+
+        // --- 1. 初始化 & 權限檢查 ---
+        function initializeAdmin() {
+            currentAdminId = localStorage.getItem(LOGGED_IN_KEY);
+            const isAdmin = localStorage.getItem(IS_ADMIN_KEY) === 'true';
+
+            if (!currentAdminId || !isAdmin) {
+                document.body.innerHTML = `
+                    <div class="flex items-center justify-center h-screen bg-customAppleYellow-50">
+                        <div class="text-center p-8 bg-white shadow-lg rounded-xl">
+                            <h1 class="text-3xl font-bold text-red-600 mb-4">權限不足</h1>
+                            <p class="text-gray-700 mb-6">您必須以管理員身分登入才能存取此頁面。</p>
+                            <a href="./login.html" class="bg-customAppleYellow-600 text-white py-2 px-6 rounded-md font-semibold shadow-md hover:bg-customAppleYellow-700">
+                                前往登入頁面
+                            </a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            console.log("管理員已登入:", currentAdminId);
+            
+            // 綁定 Tab
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => switchTab(e.currentTarget.dataset.tab));
+            });
+            
+            // 綁定批次建立表單
+            batchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleBatchCreate();
+            });
+            
+            // 綁定搜尋
+            searchInput.addEventListener('input', (e) => {
+                renderUserList(allUsersData, e.target.value.trim());
+            });
+            
+            // 綁定 Modal 關閉按鈕
+            [closeEditModalBtn, cancelEditModalBtn].forEach(btn => {
+                btn.addEventListener('click', () => closeAnimatedModal(editModal));
+            });
+            
+            [confirmCancelBtn].forEach(btn => {
+                btn.addEventListener('click', () => closeAnimatedModal(confirmModal));
+            });
+            
+            // 綁定 Modal 提交
+            editForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleSaveResources();
+            });
+            
+            confirmOkBtn.addEventListener('click', () => {
+                if (confirmCallback) confirmCallback();
+                closeAnimatedModal(confirmModal);
+            });
+            
+            // 載入預設 Tab 內容
+            loadMemberManagement();
+        }
+
+        // --- 2. Tab 切換 ---
+        function switchTab(targetTab) {
+            contents.forEach(c => c.classList.remove('active'));
+            tabs.forEach(t => {
+                t.classList.remove('border-customAppleYellow-500', 'text-customAppleYellow-600');
+                t.classList.add('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
+                t.removeAttribute('aria-current');
+            });
+
+            document.getElementById(`content-${targetTab}`).classList.add('active');
+            const activeTab = document.getElementById(`tab-btn-${targetTab}`);
+            activeTab.classList.add('border-customAppleYellow-500', 'text-customAppleYellow-600');
+            activeTab.classList.remove('border-transparent', 'text-gray-500');
+            activeTab.setAttribute('aria-current', 'page');
+        }
+
+        // --- 3. 核心功能: 成員管理 (GET) ---
+        async function loadMemberManagement() {
+            managementLoading.style.display = 'block';
+            memberListContainer.innerHTML = '';
+            
+            try {
+                // [!!] 假設的 Apps Script 新 action: get_all_users
+                const response = await fetch(`${API_URL}?action=get_all_users&userId=${currentAdminId}`);
+                const result = await response.json();
+                
+                if (result.status === 'error') throw new Error(result.message);
+                
+                allUsersData = result.data; // 快取資料
+                renderUserList(allUsersData, searchInput.value.trim());
+                managementLoading.style.display = 'none';
+
+            } catch (error) {
+                console.error("載入成員列表失敗:", error);
+                managementLoading.innerHTML = `<p class="text-center text-red-500 p-8">載入成員列表失敗: ${error.message}</p>`;
+            }
+        }
         
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            handleBatchCreate();
-        });
+        // --- 4. 核心功能: 渲染列表 ---
+        function renderUserList(users, filter = '') {
+            memberListContainer.innerHTML = '';
+            const filterLower = filter.toLowerCase();
+            
+            const filteredUsers = users.filter(user => {
+                return filter === '' || 
+                       user.name.toLowerCase().includes(filterLower) || 
+                       user.id.toLowerCase().includes(filterLower);
+            });
+            
+            if (filteredUsers.length === 0) {
+                memberListContainer.innerHTML = `<p class="text-center text-gray-500 p-8">找不到符合條件的成員。</p>`;
+                return;
+            }
+            
+            filteredUsers.forEach(user => {
+                const card = document.createElement('div');
+                card.className = 'p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200';
+                
+                const isAdmin = user.isAdmin === true;
+                const adminBadge = isAdmin 
+                    ? `<span class="text-xs font-medium bg-customAppleYellow-600 text-white px-2 py-0.5 rounded-full ml-2">Admin</span>`
+                    : '';
 
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                                ${user.name} ${adminBadge}
+                            </h3>
+                            <p class="text-sm text-gray-500">${user.id}</p>
+                        </div>
+                        <div class="mt-3 sm:mt-0 text-sm font-medium text-gray-700 space-x-4">
+                            <span>🌱 ${user.seeds}</span>
+                            <span>🍎 ${user.apples}</span>
+                            <span>🌟 ${user.goldenApples}</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200 flex flex-wrap gap-2 justify-end">
+                        <button class="btn-edit px-3 py-1.5 text-sm font-medium bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">編輯資源</button>
+                        <button class="btn-reset-pass px-3 py-1.5 text-sm font-medium bg-white text-customAppleYellow-600 border border-gray-300 rounded-md hover:bg-gray-50">重設密碼</button>
+                        <button class="btn-toggle-admin px-3 py-1.5 text-sm font-medium ${isAdmin ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-gray-600 hover:bg-gray-700'} text-white rounded-md">
+                            ${isAdmin ? '移除 Admin' : '設為 Admin'}
+                        </button>
+                    </div>
+                `;
+                
+                // 綁定按鈕事件
+                card.querySelector('.btn-edit').addEventListener('click', () => openEditModal(user));
+                card.querySelector('.btn-reset-pass').addEventListener('click', () => confirmResetPassword(user.id, user.name));
+                card.querySelector('.btn-toggle-admin').addEventListener('click', () => confirmToggleAdmin(user.id, user.name, isAdmin));
+                
+                memberListContainer.appendChild(card);
+            });
+        }
+        
+        // --- 5. Modal 邏輯: 編輯資源 (POST) ---
+        function openEditModal(user) {
+            editUserId.value = user.id;
+            editUserName.innerText = user.name;
+            editSeeds.value = user.seeds;
+            editApples.value = user.apples;
+            editGoldenApples.value = user.goldenApples;
+            editFormMessage.innerText = '';
+            editModal.showModal();
+        }
+        
+        async function handleSaveResources() {
+            submitEditModalBtn.disabled = true;
+            submitEditModalBtn.innerText = "儲存中...";
+            editFormMessage.innerText = '';
+            
+            const payload = {
+                action: 'admin_set_resources', // [!!] 假設的 Apps Script 新 action
+                adminId: currentAdminId,
+                targetUserId: editUserId.value,
+                seeds: parseInt(editSeeds.value, 10),
+                apples: parseInt(editApples.value, 10),
+                goldenApples: parseInt(editGoldenApples.value, 10)
+            };
+            
+            try {
+                const response = await postToAppsScript(payload);
+                if (response.status === 'error') throw new Error(response.message);
+                
+                // 成功
+                closeAnimatedModal(editModal);
+                loadMemberManagement(); // 重新載入列表
+                
+            } catch (error) {
+                console.error("儲存資源失敗:", error);
+                editFormMessage.innerText = error.message || "儲存失敗";
+            } finally {
+                submitEditModalBtn.disabled = false;
+                submitEditModalBtn.innerText = "儲存變更";
+            }
+        }
+        
+        // --- 6. Modal 邏輯: 重設密碼 (POST) ---
+        function confirmResetPassword(userId, userName) {
+            showConfirm(
+                '重設密碼',
+                `您確定要將 ${userName} (${userId}) 的密碼重設為他的人事號嗎？`,
+                () => handleResetPassword(userId)
+            );
+        }
+        
+        async function handleResetPassword(userId) {
+            managementLoading.innerHTML = `<p class="text-center text-customAppleYellow-600 p-8">重設密碼中...</p>`;
+            try {
+                const payload = {
+                    action: 'admin_reset_password', // [!!] 假設的 Apps Script 新 action
+                    adminId: currentAdminId,
+                    targetUserId: userId
+                };
+                const response = await postToAppsScript(payload);
+                if (response.status === 'error') throw new Error(response.message);
+                
+                // 成功，重新載入
+                loadMemberManagement();
+
+            } catch (error) {
+                console.error("重設密碼失敗:", error);
+                alert(`重設密碼失敗: ${error.message}`); // 簡單 alert
+                loadMemberManagement(); // 即使失敗也重新載入
+            }
+        }
+        
+        // --- 7. Modal 邏輯: 切換 Admin (POST) ---
+        function confirmToggleAdmin(userId, userName, currentIsAdmin) {
+            const actionText = currentIsAdmin ? '移除' : '新增';
+            showConfirm(
+                `${actionText}管理員`,
+                `您確定要將 ${userName} (${userId}) ${actionText}為管理員嗎？`,
+                () => handleToggleAdmin(userId, !currentIsAdmin)
+            );
+        }
+
+        async function handleToggleAdmin(userId, newAdminStatus) {
+            managementLoading.innerHTML = `<p class="text-center text-customAppleYellow-600 p-8">更新權限中...</p>`;
+            try {
+                const payload = {
+                    action: 'admin_toggle_admin', // [!!] 假設的 Apps Script 新 action
+                    adminId: currentAdminId,
+                    targetUserId: userId,
+                    isAdmin: newAdminStatus
+                };
+                const response = await postToAppsScript(payload);
+                if (response.status === 'error') throw new Error(response.message);
+                
+                // 成功，重新載入
+                loadMemberManagement();
+
+            } catch (error) {
+                console.error("更新權限失敗:", error);
+                alert(`更新權限失敗: ${error.message}`); // 簡單 alert
+                loadMemberManagement(); // 即使失敗也重新載入
+            }
+        }
+
+
+        // --- 8. 核心功能: 批次建立 (舊有功能, POST) ---
         async function handleBatchCreate() {
-            // 1. 鎖定按鈕
-            submitButton.disabled = true;
-            submitButton.innerHTML = `
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                處理中...
-            `;
-            showMessage('',''); // 清空訊息
+            batchSubmitButton.disabled = true;
+            batchSubmitButton.innerHTML = `... 處理中 ...`;
+            showMessage('', ''); 
 
-            const usersData = memberList.value;
+            const usersData = memberListTextarea.value;
             if (usersData.trim().length === 0) {
                 showMessage("名單為空，請輸入資料。", 'error');
-                resetButton();
+                resetBatchButton();
                 return;
             }
 
             try {
-                // 3. 呼叫 Apps Script API (POST)
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'create_users',
-                        usersData: usersData
-                    }),
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8', // Apps Script POST 需用 text/plain
-                    }
-                });
+                const payload = {
+                    action: 'create_users',
+                    adminId: currentAdminId, // [!!] 最好多傳一個 adminId 供驗證
+                    usersData: usersData
+                };
+                const response = await postToAppsScript(payload);
 
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    // 5. 成功
-                    const { successCount, errorCount } = result.data;
+                if (response.status === 'success') {
+                    const { successCount, errorCount } = response.data;
                     let successMessage = `成功建立了 ${successCount} 位新成員！`;
                     if (errorCount > 0) {
                         successMessage += ` 有 ${errorCount} 行格式錯誤或已存在未處理。`;
                     }
                     showMessage(successMessage, 'success');
-                    memberList.value = ''; // 清空輸入框
+                    memberListTextarea.value = ''; // 清空
+                    
+                    // [!! 新增 !!] 建立成功後，切換回成員管理並重新載入
+                    switchTab('management');
+                    loadMemberManagement();
+                    
                 } else {
-                    // 6. 失敗
-                    throw new Error(result.message);
+                    throw new Error(response.message);
                 }
 
             } catch (error) {
@@ -121,30 +536,62 @@
                 showMessage(error.message || "建立成員時發生錯誤，請稍後再試。", 'error');
             }
 
-            // 7. 恢復按鈕
-            resetButton();
+            resetBatchButton();
+        }
+        
+        // --- 9. 輔助工具 ---
+        
+        // POST 請求
+        async function postToAppsScript(payload) {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            });
+            return response.json();
         }
 
-        // --- 輔助工具 ---
-
+        // 批次建立表單的訊息
         function showMessage(message, type) {
-            messageDiv.textContent = message;
+            batchFormMessage.textContent = message;
             if (type === 'error') {
-                messageDiv.className = 'text-red-600 text-sm h-5';
+                batchFormMessage.className = 'text-red-600 text-sm h-5';
             } else if (type === 'success') {
-                messageDiv.className = 'text-green-600 text-sm h-5';
+                batchFormMessage.className = 'text-green-600 text-sm h-5';
             } else {
-                messageDiv.className = 'text-sm h-5';
+                batchFormMessage.className = 'text-sm h-5';
             }
         }
-
-        function resetButton() {
-            submitButton.disabled = false;
-            submitButton.innerHTML = `
+        
+        // 批次建立按鈕重設
+        function resetBatchButton() {
+            batchSubmitButton.disabled = false;
+            batchSubmitButton.innerHTML = `
                 <ion-icon name="people-outline" class="mr-2"></ion-icon>
                 批次建立成員
             `;
         }
+
+        // 通用確認 Modal
+        function showConfirm(title, message, callback) {
+            confirmTitle.innerText = title;
+            confirmMessage.innerText = message;
+            confirmCallback = callback;
+            confirmModal.showModal();
+        }
+        
+        // 關閉 Modal (帶動畫)
+        function closeAnimatedModal(modal) {
+            modal.classList.add('closing');
+            modal.addEventListener('animationend', () => {
+                modal.classList.remove('closing');
+                modal.close();
+            }, { once: true });
+        }
+
+        // --- 10. 啟動應用程式 ---
+        initializeAdmin();
+
     </script>
 
 </body>

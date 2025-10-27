@@ -4,17 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>好好吃果園 - 登入</title>
+    <!-- [!! 新增 !!] 加入 Favicon -->
+    <link rel="icon" type="image/png" href="apple-f.png">
+    <link rel="apple-touch-icon" href="apple-f.png">
+    
+    <!-- 載入 Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- [!! 新增 !!] 載入自訂配色方案 (方案四) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        customAppleYellow: {
+                            50: '#FCFAF5',  // 更淡的奶油黃 (背景)
+                            500: '#B34B62', // 玫瑰紅 (邊框/焦點)
+                            600: '#9D324E', // 酒紅色 (主要按鈕/文字)
+                            700: '#6D2833'  // 深栗色 (按鈕 Hover)
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </head>
-<body class="bg-orange-50 font-sans leading-normal tracking-normal">
+<!-- [!! 修改 !!] 替換背景色 -->
+<body class="bg-customAppleYellow-50 font-sans leading-normal tracking-normal">
 
     <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
             
             <header class="text-center">
-                <h1 class="text-5xl font-bold text-orange-600 flex items-center justify-center">
+                <!-- [!! 修改 !!] 響應式字體 & 替換顏色 -->
+                <h1 class="text-4xl sm:text-5xl font-bold text-customAppleYellow-600 flex items-center justify-center">
                     <ion-icon name="sparkles-outline" class="mr-3"></ion-icon>
                     好好吃果園
                 </h1>
@@ -29,18 +55,21 @@
                         <div>
                             <label for="employee-id" class="block text-lg font-medium text-gray-700">人事號 (帳號)</label>
                             <div class="mt-1">
-                                <input id="employee-id" name="employee-id" type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg" placeholder="請輸入您的人事號">
+                                <!-- [!! 修改 !!] 替換焦點顏色 -->
+                                <input id="employee-id" name="employee-id" type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500 text-lg" placeholder="請輸入您的人事號">
                             </div>
                         </div>
                         <div>
                             <label for="password" class="block text-lg font-medium text-gray-700">密碼</label>
                             <div class="mt-1">
-                                <input id="password" name="password" type="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg" placeholder="預設密碼為人事號">
+                                <!-- [!! 修改 !!] 替換焦點顏色 -->
+                                <input id="password" name="password" type="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500 text-lg" placeholder="預設密碼為人事號">
                             </div>
                         </div>
                         <div id="login-message" class="text-sm h-5 text-red-600 font-medium"></div>
                         <div>
-                            <button type="submit" id="login-button" class="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-lg shadow-sm text-xl font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-200 disabled:opacity-50">
+                            <!-- [!! 修改 !!] 替換按鈕顏色 -->
+                            <button type="submit" id="login-button" class="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-lg shadow-sm text-xl font-medium text-white bg-customAppleYellow-600 hover:bg-customAppleYellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-customAppleYellow-500 transition duration-200 disabled:opacity-50">
                                 <ion-icon name="log-in-outline" class="mr-2"></ion-icon>
                                 登入
                             </button>
@@ -50,7 +79,8 @@
             </div>
             
             <div class="text-center mt-6">
-                <a href="dashboard.html" class="text-lg text-gray-700 hover:text-orange-600">&larr; 返回公開總覽頁</a>
+                <!-- [!! 修改 !!] 替換連結顏色 -->
+                <a href="dashboard.html" class="text-lg text-gray-700 hover:text-customAppleYellow-600">&larr; 返回公開總覽頁</a>
             </div>
 
         </div>
@@ -58,6 +88,7 @@
 
     <script type="module">
         // [!!] 已填入您提供的 Apps Script 網址
+        // [!! 修正 !!] 移除 <!-- ... existing code ... --> 並貼上完整 JS 
         const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
         const appId = 'default-app-id';
 
@@ -167,3 +198,4 @@
 
 </body>
 </html>
+

@@ -75,10 +75,7 @@
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-2xl font-bold text-gray-800">我的倉庫</h2>
                         <div class="flex items-center space-x-2">
-                            <!-- [!! 新增 !!] 刷新按鈕 -->
-                            <button id="refresh-button" title="刷新資料" class="text-gray-500 hover:text-customAppleYellow-600 transition duration-150">
-                                <ion-icon name="refresh-outline" class="text-2xl"></ion-icon>
-                            </button>
+                            <!-- [!! 修改 !!] 刷新按鈕已移至下方歷程區 -->
                             <div id="admin-link-placeholder"></div>
                             <button id="logout-button" title="登出" class="text-gray-500 hover:text-red-600 transition duration-150">
                                 <ion-icon name="log-out-outline" class="text-2xl"></ion-icon>
@@ -106,8 +103,8 @@
                     <p class="text-xs text-gray-500 mt-4 text-center">每天登入會自動補充 3 顆種子 (上限 10 顆)</p>
                 </div>
 
-                <!-- [!! 修改 !!] 改為可收合的 details 標籤 -->
-                <details class="bg-white rounded-xl shadow-lg" open>
+                <!-- [!! 修改 !!] 改為可收合的 details 標籤 (移除 open，預設收合) -->
+                <details class="bg-white rounded-xl shadow-lg">
                     <summary class="p-6 cursor-pointer flex justify-between items-center">
                         <h2 class="text-2xl font-bold text-gray-800">修改密碼</h2>
                     </summary>
@@ -180,13 +177,19 @@
                 
                 <div class="bg-white rounded-xl shadow-lg">
                     <div class="border-b border-gray-200">
-                        <nav class="flex -mb-px px-6">
-                            <!-- [!! 修改 !!] 替換 Tab 顏色 -->
-                            <button data-tab="received" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-customAppleYellow-500 text-customAppleYellow-600">
-                                收貨區
-                            </button>
-                            <button data-tab="sent" class="tab-btn whitespace-nowrap ml-8 py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                出貨區
+                        <!-- [!! 修改 !!] 調整 nav 結構以放置刷新按鈕 -->
+                        <nav class="flex justify-between items-center -mb-px px-6">
+                            <div> <!-- Tab 區域 -->
+                                <button data-tab="received" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-customAppleYellow-500 text-customAppleYellow-600">
+                                    收貨區
+                                </button>
+                                <button data-tab="sent" class="tab-btn whitespace-nowrap ml-8 py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                    出貨區
+                                </button>
+                            </div>
+                            <!-- [!! 修改 !!] 刷新按鈕移至此處 -->
+                            <button id="refresh-button" title="刷新資料" class="text-gray-500 hover:text-customAppleYellow-600 transition duration-150 py-3">
+                                <ion-icon name="refresh-outline" class="text-2xl"></ion-icon>
                             </button>
                         </nav>
                     </div>
@@ -242,7 +245,7 @@
         const goldenAppleCountEl = document.getElementById('golden-apple-count');
         const logoutButton = document.getElementById('logout-button'); 
         const adminLinkPlaceholder = document.getElementById('admin-link-placeholder');
-        const refreshButton = document.getElementById('refresh-button'); // [!! 新增 !!]
+        const refreshButton = document.getElementById('refresh-button'); // [!! 位置已更改，但變數不變 !!]
 
         // DOM 元素 (感謝歷程)
         const tabButtons = document.querySelectorAll('.tab-btn');

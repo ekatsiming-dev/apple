@@ -187,8 +187,8 @@
 
 
     <script type="module">
-        // [!! v1.6.1 API 網址更新 !!] 
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzK28Jrvkv8smDqXg0GOKA4obB-Tgfgs4AEQw49wxRiugMGocH5gn4pT969K8wpiHzO/exec';
+        // [!! v1.6.3 API 網址更新 !!] 
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwqvLcasnoWBj4FO_GYi5hxpzkkTF5dix4K0HZ9N4MoBzQc2K1S4Co8Lnz5vcjB7WhX/exec';
         const appId = 'default-app-id';
         const LOGGED_IN_KEY = `gg_user_${appId}`;
         const IS_ADMIN_KEY = `gg_admin_${appId}`; 
@@ -516,7 +516,7 @@
 
                 if (response.status === 'success') {
                     const { successCount, errorCount } = response.data;
-                    let successMessage = `成功建立了 ${successCount} 位新成員！`;
+                    let successMessage = `成功建立了 ${successCount} 位 new 成員！`;
                     if (errorCount > 0) {
                         successMessage += ` 有 ${errorCount} 行格式錯誤或已存在未處理。`;
                     }
@@ -596,3 +596,4 @@
 
 </body>
 </html>
+

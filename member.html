@@ -2,25 +2,56 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-            <link rel="icon" type="image/png" href="apple-f.png">
+    <link rel="icon" type="image/png" href="apple-f.png">
     <link rel="apple-touch-icon" href="apple-f.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>好好吃果園 - 園丁中心</title>
     
+    <!-- 載入 Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- [!! 新增 !!] 載入自訂配色方案 (方案四) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        customAppleYellow: {
+                            50: '#FCFAF5',  // 更淡的奶油黃 (背景)
+                            500: '#B34B62', // 玫瑰紅 (邊框/焦點)
+                            600: '#9D324E', // 酒紅色 (主要按鈕/文字)
+                            700: '#6D2833'  // 深栗色 (按鈕 Hover)
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <style>
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        
+        /* [!! 新增 !!] 用於 <details> 標籤的箭頭旋轉 */
+        details[open] .details-arrow { 
+            transform: rotate(180deg); 
+        }
+        /* 避免 Webkit 瀏覽器(Safari) 預設的箭頭 */
+        details summary::-webkit-details-marker {
+            display: none;
+        }
     </style>
 </head>
-<body class="bg-orange-50 font-sans leading-normal tracking-normal">
+<!-- [!! 修改 !!] 替換背景色 -->
+<body class="bg-customAppleYellow-50 font-sans leading-normal tracking-normal">
 
     <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8" id="main-container">
 
         <header class="text-center mb-8">
-            <h1 class="text-5xl font-bold text-orange-600 flex items-center justify-center">
+            <!-- [!! 修改 !!] 響應式字體 & 替換顏色 -->
+            <h1 class="text-4xl sm:text-5xl font-bold text-customAppleYellow-600 flex items-center justify-center">
                 <ion-icon name="sparkles-outline" class="mr-3"></ion-icon>
                 好好吃果園
             </h1>
@@ -34,7 +65,11 @@
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-2xl font-bold text-gray-800">我的倉庫</h2>
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-3">
+                            <!-- [!! 新增 !!] 刷新按鈕 -->
+                            <button id="refresh-button" title="刷新資料" class="text-gray-500 hover:text-customAppleYellow-600 transition duration-150">
+                                <ion-icon name="refresh-outline" class="text-2xl"></ion-icon>
+                            </button>
                             <div id="admin-link-placeholder"></div>
                             <button id="logout-button" title="登出" class="text-gray-500 hover:text-red-600 transition duration-150">
                                 <ion-icon name="log-out-outline" class="text-2xl"></ion-icon>
@@ -42,82 +77,71 @@
                         </div>
                     </div>
                     <div class="text-center mb-4">
-                        <img src="https://placehold.co/100x100/FEE2D5/E98256?text=Hi!" class="w-24 h-24 rounded-full mx-auto shadow-md border-4 border-white">
+                        <!-- [!! 修改 !!] 替換頭像 placeholder 顏色 -->
+                        <img src="https://placehold.co/100x100/FDF6F8/9D324E?text=Hi!" class="w-24 h-24 rounded-full mx-auto shadow-md border-4 border-white">
                         <h3 id="user-name-display" class="text-xl font-semibold text-gray-900 mt-3">載入中...</h3>
                     </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center bg-yellow-100 p-3 rounded-lg">
-                            <span class="text-lg font-medium text-yellow-800">我的種子 🌱</span>
-                            <span id="seed-count" class="text-2xl font-bold text-yellow-900">0</span>
-                        </div>
-                        <div class="flex justify-between items-center bg-red-100 p-3 rounded-lg">
-                            <span class="text-lg font-medium text-red-800">我的蘋果 🍎</span>
-                            <span id="apple-count" class="text-2xl font-bold text-red-900">0</span>
-                        </div>
-                        <div class="flex justify-between items-center bg-yellow-400 p-3 rounded-lg">
-                            <span class="text-lg font-medium text-yellow-900">金蘋果 🌟</span>
-                            <span id="golden-apple-count" class="text-2xl font-bold text-black">0</span>
-                        </div>
-                    </div>
+<!-- ... existing code ... -->
                     <p class="text-xs text-gray-500 mt-4 text-center">每天登入會自動補充 3 顆種子 (上限 10 顆)</p>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">修改密碼</h2>
-                    <form id="change-password-form" class="space-y-4">
-                        <div>
-                            <label for="new-password" class="block text-sm font-medium text-gray-700">新密碼</label>
-                            <input type="password" id="new-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm py-2 px-3" placeholder="請輸入您的新密碼">
-                        </div>
-                        <div>
-                            <label for="confirm-password" class="block text-sm font-medium text-gray-700">確認新密碼</label>
-                            <input type="password" id="confirm-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm py-2 px-3" placeholder="請再次輸入新密碼">
-                        </div>
-                        <div id="password-form-message" class="text-sm h-5 text-red-600"></div>
-                        <button type="submit" id="submit-password-button" class="w-full bg-gray-700 text-white py-2 px-4 rounded-md font-semibold shadow-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50">
-                            儲存新密碼
-                        </button>
-                    </form>
-                </div>
+                <!-- [!! 修改 !!] 將密碼區塊改為可收合的 <details> -->
+                <details class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <summary class="p-6 cursor-pointer text-2xl font-bold text-gray-800 flex justify-between items-center list-none">
+                        修改密碼
+                        <!-- [!! 新增 !!] 箭頭圖示 -->
+                        <ion-icon name="chevron-down-outline" class="text-xl text-gray-500 transition-transform duration-200 transform details-arrow"></ion-icon>
+                    </summary>
+                    <div class="p-6 pt-0">
+                        <form id="change-password-form" class="space-y-4">
+                            <div>
+                                <label for="new-password" class="block text-sm font-medium text-gray-700">新密碼</label>
+                                <!-- [!! 修改 !!] 替換焦點顏色 -->
+                                <input type="password" id="new-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500 sm:text-sm py-2 px-3" placeholder="請輸入您的新密碼">
+                            </div>
+                            <div>
+                                <label for="confirm-password" class="block text-sm font-medium text-gray-700">確認新密碼</label>
+                                <!-- [!! 修改 !!] 替換焦點顏色 -->
+                                <input type="password" id="confirm-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500 sm:text-sm py-2 px-3" placeholder="請再次輸入新密碼">
+                            </div>
+                            <div id="password-form-message" class="text-sm h-5 text-red-600"></div>
+                            <button type="submit" id="submit-password-button" class="w-full bg-gray-700 text-white py-2 px-4 rounded-md font-semibold shadow-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50">
+                                儲存新密碼
+                            </button>
+                        </form>
+                    </div>
+                </details>
 
             </div>
 
             <div class="md:col-span-2 space-y-6">
 
                 <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">發貨中心</h2>
-                    <form id="send-gift-form" class="space-y-4">
+<!-- ... existing code ... -->
                         <div>
                             <label for="receiver-select" class="block text-sm font-medium text-gray-700">發送對象</label>
-                            <select id="receiver-select" name="receiver" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                            <!-- [!! 修改 !!] 替換焦點顏色 -->
+                            <select id="receiver-select" name="receiver" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500 sm:text-sm">
                                 <option value="">正在載入園丁名單...</option>
                             </select>
                         </div>
                         <div>
                             <label for="gift-message" class="block text-sm font-medium text-gray-700">美言幾句 (必填)</label>
-                            <textarea id="gift-message" name="message" rows="3" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm" placeholder="謝謝你..."></textarea>
+                            <!-- [!! 修改 !!] 替換焦點顏色 -->
+                            <textarea id="gift-message" name="message" rows="3" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500 sm:text-sm" placeholder="謝謝你..."></textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">選擇出貨物 (擇一)</label>
-                            <div class="flex space-x-2 mt-1">
-                                <button type="button" data-gift-type="seed" class="gift-type-btn flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-yellow-200">
-                                    種子 🌱
-                                </button>
-                                <button type="button" data-gift-type="apple" class="gift-type-btn flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-medium hover:bg-red-200">
-                                    蘋果 🍎
-                                </button>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="gift-amount" class="block text-sm font-medium text-gray-700">數量</label>
+<!-- ... existing code ... -->
                             <div class="flex items-center mt-1">
                                 <button type="button" id="amount-decrease" class="px-3 py-1 border border-gray-300 rounded-l-md bg-gray-100 hover:bg-gray-200">-</button>
-                                <input type="number" id="gift-amount" name="amount" value="1" min="1" class="w-full text-center py-2 border-t border-b border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                <!-- [!! 修改 !!] 替換焦點顏色 -->
+                                <input type="number" id="gift-amount" name="amount" value="1" min="1" class="w-full text-center py-2 border-t border-b border-gray-300 focus:outline-none focus:ring-customAppleYellow-500 focus:border-customAppleYellow-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                                 <button type="button" id="amount-increase" class="px-3 py-1 border border-gray-300 rounded-r-md bg-gray-100 hover:bg-gray-200">+</button>
                             </div>
                         </div>
                         <div id="gift-form-message" class="text-sm h-5 text-red-600"></div>
-                        <button type="submit" id="submit-gift-button" class="w-full bg-orange-600 text-white py-2 px-4 rounded-md font-semibold shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50">
+                        <!-- [!! 修改 !!] 替換按鈕顏色 -->
+                        <button type="submit" id="submit-gift-button" class="w-full bg-customAppleYellow-600 text-white py-2 px-4 rounded-md font-semibold shadow-md hover:bg-customAppleYellow-700 focus:outline-none focus:ring-2 focus:ring-customAppleYellow-500 focus:ring-offset-2 disabled:opacity-50">
                             送出感謝
                         </button>
                     </form>
@@ -126,7 +150,8 @@
                 <div class="bg-white rounded-xl shadow-lg">
                     <div class="border-b border-gray-200">
                         <nav class="flex -mb-px px-6">
-                            <button data-tab="received" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-orange-500 text-orange-600">
+                            <!-- [!! 修改 !!] 替換 Tab 顏色 -->
+                            <button data-tab="received" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-customAppleYellow-500 text-customAppleYellow-600">
                                 收貨區
                             </button>
                             <button data-tab="sent" class="tab-btn whitespace-nowrap ml-8 py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
@@ -134,101 +159,25 @@
                             </button>
                         </nav>
                     </div>
-                    
-                    <div id="tab-received" class="tab-content active p-6 space-y-4">
-                        <div id="received-list" class="divide-y divide-gray-200">
-                            <p class="text-gray-500 py-4">澆水中...</p>
-                        </div>
-                    </div>
-                    
-                    <div id="tab-sent" class="tab-content p-6 space-y-4">
-                        <div id="sent-list" class="divide-y divide-gray-200">
-                            <p class="text-gray-500 py-4">澆水中...</p>
-                        </div>
-                    </div>
+<!-- ... existing code ... -->
                 </div>
 
                 <div class="text-center mt-6">
-                    <a href="./dashboard.html" class="text-lg text-gray-700 hover:text-orange-600">&larr; 返回公開總覽頁</a>
+                    <!-- [!! 修改 !!] 替換連結顏色 -->
+                    <a href="./dashboard.html" class="text-lg text-gray-700 hover:text-customAppleYellow-600">&larr; 返回公開總覽頁</a>
                 </div>
 
             </div>
-        </div> 
-    </div> 
-    
-    <script type="module">
-        // [!!] 已填入您提供的 Apps Script 網址
-        const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
-        const appId = 'default-app-id'; 
-
-        // --- 1. 全域變數與 DOM 元素 ---
-        let currentUserId = null;
-        let userInventory = { seeds: 0, apples: 0 };
-        const LOGGED_IN_KEY = `gg_user_${appId}`;
-        const IS_ADMIN_KEY = `gg_admin_${appId}`; 
-
-        // DOM 元素 (快速發送)
-        const sendGiftForm = document.getElementById('send-gift-form');
-        const receiverSelect = document.getElementById('receiver-select');
-        const giftMessage = document.getElementById('gift-message');
-        const giftTypeButtons = document.querySelectorAll('.gift-type-btn');
-        const giftAmountInput = document.getElementById('gift-amount');
-        const amountDecrease = document.getElementById('amount-decrease');
-        const amountIncrease = document.getElementById('amount-increase');
-        const submitGiftButton = document.getElementById('submit-gift-button');
-        const giftFormMessage = document.getElementById('gift-form-message');
-        
-        // DOM 元素 (我的狀態)
-        const userNameDisplay = document.getElementById('user-name-display');
-        const seedCountEl = document.getElementById('seed-count');
+<!-- ... existing code ... -->
         const appleCountEl = document.getElementById('apple-count');
         const goldenAppleCountEl = document.getElementById('golden-apple-count');
         const logoutButton = document.getElementById('logout-button'); 
         const adminLinkPlaceholder = document.getElementById('admin-link-placeholder'); 
+        const refreshButton = document.getElementById('refresh-button'); // [!! 新增 !!]
 
         // DOM 元素 (感謝歷程)
         const tabButtons = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const receivedList = document.getElementById('received-list');
-        const sentList = document.getElementById('sent-list');
-
-        // DOM 元素 (修改密碼)
-        const passwordForm = document.getElementById('change-password-form');
-        const newPasswordInput = document.getElementById('new-password');
-        const confirmPasswordInput = document.getElementById('confirm-password');
-        const passwordFormMessage = document.getElementById('password-form-message');
-        const submitPasswordButton = document.getElementById('submit-password-button');
-
-        let selectedGiftType = null;
-
-        // --- 2. 登入檢查與初始化 ---
-
-        function checkLoginAndInit() {
-            currentUserId = localStorage.getItem(LOGGED_IN_KEY);
-            const isAdmin = localStorage.getItem(IS_ADMIN_KEY); 
-            
-            if (!currentUserId || !isAdmin) { 
-                console.log("未登入或登入狀態不完整。");
-                document.body.innerHTML = `
-                    <div class="flex items-center justify-center h-screen bg-orange-50">
-                        <div class="text-center p-8 bg-white shadow-lg rounded-xl">
-                            <h1 class="text-3xl font-bold text-orange-600 mb-4">請先登入</h1>
-                            <p class="text-gray-700 mb-6">您需要登入才能存取此頁面。</p>
-                            <a href="./login.html" class="bg-orange-600 text-white py-2 px-6 rounded-md font-semibold shadow-md hover:bg-orange-700">
-                                前往登入頁面
-                            </a>
-                        </div>
-                    </div>
-                `;
-                return; 
-            }
-            
-            console.log("已登入使用者 ID:", currentUserId);
-            setupAppForUser(currentUserId);
-        }
-
-        // --- 3. 核心 App 邏輯 (GET) ---
-
+<!-- ... existing code ... -->
         async function setupAppForUser(userId) {
             console.log(`為 ${userId} 啟動應用...`);
 
@@ -237,343 +186,111 @@
             try {
                 // 3.1 呼叫 Apps Script (GET) 取得所有會員資料
                 const response = await fetch(`${API_URL}?action=get_member_data&userId=${userId}`);
-                const result = await response.json();
-
-                if (result.status === 'error') {
-                    throw new Error(result.message);
-                }
-
-                const { myStats, colleagues, receivedList, sentList } = result.data;
-
-                // 3.2 更新 "我的狀態" UI
-                userNameDisplay.innerText = myStats.name;
-                seedCountEl.innerText = myStats.seeds;
-                appleCountEl.innerText = myStats.apples;
-                goldenAppleCountEl.innerText = myStats.goldenApples;
-
-                userInventory.seeds = myStats.seeds;
-                userInventory.apples = myStats.apples;
-
-                // 3.3 載入同事名單
-                loadColleagues(colleagues);
-
-                // 3.4 載入感謝歷程
+<!-- ... existing code ... -->
                 loadTransactionHistory(receivedList, sentList);
                 
                 // 3.5 綁定登出按鈕
                 logoutButton.addEventListener('click', handleLogout);
 
-                // 3.6 綁定修改密碼表單
-                passwordForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    handleChangePassword();
-                });
+                // [!! 新增 !!] 3.6 綁定刷新按鈕
+                // (只綁定一次，避免重複綁定)
+                if (!refreshButton.dataset.listenerAttached) {
+                    refreshButton.addEventListener('click', () => {
+                        const icon = refreshButton.querySelector('ion-icon');
+                        icon.classList.add('animate-spin');
+                        
+                        console.log("手動刷新資料...");
+                        
+                        // 重新呼叫
+                        setupAppForUser(currentUserId).finally(() => {
+                            // 為了讓使用者有「刷新感」，延遲 0.5 秒移除動畫
+                            setTimeout(() => icon.classList.remove('animate-spin'), 500);
+                        });
+                    });
+                    refreshButton.dataset.listenerAttached = 'true';
+                }
+
+                // 3.7 綁定修改密碼表單
+                if (!passwordForm.dataset.listenerAttached) {
+                    passwordForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        handleChangePassword();
+                    });
+                    passwordForm.dataset.listenerAttached = 'true';
+                }
 
             } catch (error) {
-                console.error("載入會員資料失敗:", error);
-                if (error.message.includes("找不到使用者資料")) {
-                    alert("您的登入資料已失效，請重新登入。");
-                    handleLogout();
-                } else {
-                    alert("無法連接到伺服器，請稍後再試。");
-                }
-            }
-        }
-
-        // --- 4. 功能實作 ---
-
+<!-- ... existing code ... -->
         // 4.0 渲染 Admin 按鈕
         function renderAdminButton() {
             const isAdmin = localStorage.getItem(IS_ADMIN_KEY) === 'true'; 
             
             if (isAdmin) {
                 adminLinkPlaceholder.innerHTML = `
-                    <a href="./admin.html" title="後台管理" class="text-gray-500 hover:text-orange-600 transition duration-150">
+                    <!-- [!! 修改 !!] 替換連結顏色 -->
+                    <a href="./admin.html" title="後台管理" class="text-gray-500 hover:text-customAppleYellow-600 transition duration-150">
                         <ion-icon name="server-outline" class="text-2xl"></ion-icon>
                     </a>
                 `;
-            } else {
-                adminLinkPlaceholder.innerHTML = ''; 
-            }
-        }
-        
-        // 4.1 載入同事名單 (渲染)
-        function loadColleagues(colleagues) {
-            receiverSelect.innerHTML = '';
-            let optionsHtml = '';
-            
-            if (colleagues.length === 0) {
-                optionsHtml = '<option value="">目前沒有其他同事</option>'; 
-            } else {
-                optionsHtml = '<option value="">-- 選擇感謝對象 --</option>';
-                colleagues.forEach(colleague => {
-                    optionsHtml += `<option value="${colleague.id}">${colleague.name}</option>`;
-                });
-            }
-            receiverSelect.innerHTML = optionsHtml;
-        }
-        
-        // 4.2 載入感謝歷程 (渲染)
-        function loadTransactionHistory(received, sent) {
-            let receivedHtml = '';
-            if (!received || received.length === 0) {
-                receivedHtml = '<p class="text-gray-500 py-4">目前沒有收到的感謝。</p>';
-            } else {
-                received.forEach(tx => {
-                    // [!! 修正 !!]
-                    // 根據新規則：
-                    // - 發送 'seed' (種子) -> 收到 '🍎' (蘋果)
-                    // - 發送 'apple' (蘋果) -> 收到 '🌟' (金蘋果)
-                    //
-                    // tx.type 是發送者送出的類型。
-                    // 所以我們要反轉顯示的圖示和顏色。
-                    
-                    const isAppleReceived = (tx.type === 'seed'); // 收到種子，變成蘋果
-                    const icon = isAppleReceived ? '🍎' : '🌟';
-                    const colorClass = isAppleReceived ? 'text-red-600' : 'text-yellow-600';
-
-                    receivedHtml += `
-                        <div class="py-4">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-semibold text-lg text-gray-800">${tx.senderName}</span>
-                                <span class="text-sm text-gray-500">${tx.timestamp}</span>
-                            </div>
-                            <p class="text-gray-700 mb-2">"${tx.message}"</p>
-                            <div class="text-right font-medium ${colorClass}">
-                                + ${tx.amount} ${icon}
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            receivedList.innerHTML = receivedHtml;
-            
-            let sentHtml = '';
-            if (!sent || sent.length === 0) {
-                sentHtml = '<p class="text-gray-500 py-4">目前沒有送出的感謝。</p>';
-            } else {
-                sent.forEach(tx => {
-                    sentHtml += `
-                        <div class="py-4">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-semibold text-lg text-gray-800">To: ${tx.receiverName}</span>
-                                <span class="text-sm text-gray-500">${tx.timestamp}</span>
-                            </div>
-                            <p class="text-gray-700 mb-2">"${tx.message}"</p>
-                            <div class="text-right font-medium text-gray-600">
-                                - ${tx.amount} ${tx.type === 'seed' ? '🌱' : '🍎'}
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            sentList.innerHTML = sentHtml;
-        }
-        
-        // 4.3 登出
+<!-- ... existing code ... -->
+                <div class="flex items-center justify-center h-screen bg-customAppleYellow-50">
+                    <div class="text-center p-8 bg-white shadow-lg rounded-xl">
+                        <!-- [!! 修改 !!] 替換顏色 -->
+                        <h1 class="text-3xl font-bold text-customAppleYellow-600 mb-4">請先登入</h1>
+                        <p class="text-gray-700 mb-6">您需要登入才能存取此頁面。</p>
+                        <!-- [!! 修改 !!] 替換按鈕顏色 -->
+                        <a href="./login.html" class="bg-customAppleYellow-600 text-white py-2 px-6 rounded-md font-semibold shadow-md hover:bg-customAppleYellow-700">
+                            前往登入頁面
+                        </a>
+                    </div>
+<!-- ... existing code ... -->
         function handleLogout() {
             localStorage.removeItem(LOGGED_IN_KEY);
             localStorage.removeItem(IS_ADMIN_KEY); 
             console.log("已登出");
             document.body.innerHTML = `
-                <div class="flex items-center justify-center h-screen bg-orange-50">
+                <!-- [!! 修改 !!] 替換背景色 -->
+                <div class="flex items-center justify-center h-screen bg-customAppleYellow-50">
                     <div class="text-center p-8 bg-white shadow-lg rounded-xl">
-                        <h1 class="text-3xl font-bold text-orange-600 mb-4">已登出</h1>
+                        <!-- [!! 修改 !!] T替換顏色 -->
+                        <h1 class="text-3xl font-bold text-customAppleYellow-600 mb-4">已登出</h1>
                         <p class="text-gray-700 mb-6">您已成功登出。</p>
-                        <a href="./login.html" class="bg-orange-600 text-white py-2 px-6 rounded-md font-semibold shadow-md hover:bg-orange-700">
+                        <!-- [!! 修改 !!] 替換按鈕顏色 -->
+                        <a href="./login.html" class="bg-customAppleYellow-600 text-white py-2 px-6 rounded-md font-semibold shadow-md hover:bg-customAppleYellow-700">
                             返回登入頁面
                         </a>
                     </div>
-                </div>
-            `;
-        }
-        
-        // 4.4 修改密碼 (POST)
-        async function handleChangePassword() {
-            const newPassword = newPasswordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
-            
-            if (!newPassword || !confirmPassword) {
-                showPasswordMessage("密碼欄位不可為空。", 'error');
-                return;
-            }
-            if (newPassword !== confirmPassword) {
-                showPasswordMessage("兩次輸入的新密碼不相符。", 'error');
-                return;
-            }
-            if (newPassword.length < 4) { 
-                showPasswordMessage("密碼長度至少需要 4 個字元。", 'error');
-                return;
-            }
-
-            submitPasswordButton.disabled = true;
-            submitPasswordButton.innerText = "儲存中...";
-            
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'change_password',
-                        userId: currentUserId,
-                        newPassword: newPassword
-                    }),
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-                });
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    showPasswordMessage("密碼更新成功！", 'success');
-                    passwordForm.reset();
-                } else {
-                    throw new Error(result.message);
-                }
-
-            } catch (error) {
-                console.error("修改密碼失敗:", error);
-                showPasswordMessage(error.message || "更新失敗，請稍後再試。", 'error');
-            }
-            
-            submitPasswordButton.disabled = false;
-            submitPasswordButton.innerText = "儲存新密碼";
-        }
-        
-        function showPasswordMessage(message, type) {
-            passwordFormMessage.textContent = message;
-            passwordFormMessage.className = `text-${type === 'success' ? 'green' : 'red'}-600 text-sm h-5`;
-        }
-
-        // --- 5. 表單與 UI 互動邏輯 ---
-
-        // 5.1 感謝表單提交 (POST)
-        sendGiftForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            handleGiftSubmit();
-        });
-
-        async function handleGiftSubmit() {
-            const receiverId = receiverSelect.value;
-            const message = giftMessage.value.trim();
-            const amount = parseInt(giftAmountInput.value, 10);
-            const type = selectedGiftType;
-
-            if (!receiverId) { showGiftMessage("請選擇一位感謝對象。"); return; }
-            if (!message) { showGiftMessage("感謝訊息不可為空。"); return; }
-            if (!type) { showGiftMessage("請選擇要送出的禮物類型。"); return; }
-            if (isNaN(amount) || amount < 1) { showGiftMessage("數量必須大於 0。"); return; }
-            if (type === 'seed' && userInventory.seeds < amount) {
-                showGiftMessage(`種子不足 (您只有 ${userInventory.seeds} 顆)。`); return;
-            }
-            if (type === 'apple' && userInventory.apples < amount) {
-                showGiftMessage(`蘋果不足 (您只有 ${userInventory.apples} 顆)。`); return;
-            }
-
-            submitGiftButton.disabled = true;
-            submitGiftButton.innerText = "傳送中...";
-            showGiftMessage("");
-            
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'send_gift',
-                        senderId: currentUserId,
-                        receiverId: receiverId,
-                        type: type,
-                        amount: amount,
-                        message: message
-                    }),
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-                });
-                
-                const result = await response.json();
-
+<!-- ... existing code ... -->
                 if (result.status === 'success') {
                     console.log("交易成功！");
                     sendGiftForm.reset();
                     selectedGiftType = null;
-                    giftTypeButtons.forEach(btn => btn.classList.remove('bg-yellow-400', 'bg-red-400', 'ring-2', 'ring-offset-1', 'ring-orange-500'));
+                    // [!! 修改 !!] 替換按鈕顏色
+                    giftTypeButtons.forEach(btn => btn.classList.remove('bg-yellow-400', 'bg-red-400', 'ring-2', 'ring-offset-1', 'ring-customAppleYellow-500'));
                     giftAmountInput.value = 1;
                     showGiftMessage("出貨完成！", 'success');
-                    
-                    if (type === 'seed') {
-                        userInventory.seeds -= amount;
-                    } else {
-                        userInventory.apples -= amount;
-                    }
-                    seedCountEl.innerText = userInventory.seeds;
-                    appleCountEl.innerText = userInventory.apples;
-                    
-                    setupAppForUser(currentUserId); 
-                    
-                } else {
-                    throw new Error(result.message);
-                }
-                
-            } catch (error) {
-                console.error("交易失敗:", error);
-                showGiftMessage(error.message || "傳送失敗，請稍後再試。", 'error');
-            }
-
-            submitGiftButton.disabled = false;
-            submitGiftButton.innerText = "送出感謝";
-        }
-        
-        function showGiftMessage(message, type = 'error') {
-            giftFormMessage.textContent = message;
-            giftFormMessage.className = `text-${type === 'success' ? 'green' : 'red'}-600 text-sm h-5`;
-        }
-
-        // 5.2 禮物類型按鈕
-        giftTypeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                giftTypeButtons.forEach(btn => {
-                    btn.classList.remove('bg-yellow-400', 'bg-red-400', 'ring-2', 'ring-offset-1', 'ring-orange-500');
-                    btn.classList.add('bg-gray-200');
-                });
-                selectedGiftType = button.dataset.giftType;
+<!-- ... existing code ... -->
                 button.classList.remove('bg-gray-200');
                 if (selectedGiftType === 'seed') {
-                    button.classList.add('bg-yellow-400', 'ring-2', 'ring-offset-1', 'ring-orange-500');
+                    // [!! 修改 !!] 替換按鈕顏色
+                    button.classList.add('bg-yellow-400', 'ring-2', 'ring-offset-1', 'ring-customAppleYellow-500');
                 } else {
-                    button.classList.add('bg-red-400', 'ring-2', 'ring-offset-1', 'ring-orange-500');
+                    // [!! 修改 !!] 替換按鈕顏色
+                    button.classList.add('bg-red-400', 'ring-2', 'ring-offset-1', 'ring-customAppleYellow-500');
                 }
             });
         });
-        
-        // 5.3 數量按鈕
-        amountDecrease.addEventListener('click', () => {
-            let currentAmount = parseInt(giftAmountInput.value, 10);
-            if (currentAmount > 1) { giftAmountInput.value = currentAmount - 1; }
-        });
-        amountIncrease.addEventListener('click', () => {
-            let currentAmount = parseInt(giftAmountInput.value, 10);
-            giftAmountInput.value = currentAmount + 1;
-        });
-        
-        // 5.4 歷程分頁
+<!-- ... existing code ... -->
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabId = button.dataset.tab;
                 tabButtons.forEach(btn => {
-                    btn.classList.remove('border-orange-500', 'text-orange-600');
+                    // [!! 修改 !!] 替換 Tab 顏色
+                    btn.classList.remove('border-customAppleYellow-500', 'text-customAppleYellow-600');
                     btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
                 });
-                button.classList.add('border-orange-500', 'text-orange-600');
+                // [!! 修改 !!] T替換 Tab 顏色
+                button.classList.add('border-customAppleYellow-500', 'text-customAppleYellow-600');
                 button.classList.remove('border-transparent', 'text-gray-500');
                 tabContents.forEach(content => {
-                    if (content.id === `tab-${tabId}`) {
-                        content.classList.add('active');
-                    } else {
-                        content.classList.remove('active');
-                    }
-                });
-            });
-        });
-
-        // --- 6. 啟動應用程式 ---
-        checkLoginAndInit(); 
-
-    </script>
-
-</body>
-</html>
+<!-- ... existing code ... -->

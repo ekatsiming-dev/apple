@@ -132,6 +132,14 @@
 
             <div class="md:col-span-2 space-y-6">
 
+                <!-- [!! 修改 !!] 返回總覽頁按鈕移至此處 -->
+                <div class="text-left">
+                    <a href="./dashboard.html" class="text-lg text-gray-700 hover:text-customAppleYellow-600 transition duration-150">
+                        <ion-icon name="arrow-back-outline" class="inline-block align-middle mr-1"></ion-icon>
+                        返回公開總覽頁
+                    </a>
+                </div>
+
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">發貨中心</h2>
                     <form id="send-gift-form" class="space-y-4">
@@ -207,11 +215,8 @@
                     </div>
                 </div>
 
-                <div class="text-center mt-6">
-                    <!-- [!! 修改 !!] 替換連結顏色 -->
-                    <a href="./dashboard.html" class="text-lg text-gray-700 hover:text-customAppleYellow-600">&larr; 返回公開總覽頁</a>
-                </div>
-
+                <!-- [!! 修改 !!] 移除底部的返回連結 -->
+                
             </div>
         </div> 
     </div> 
@@ -539,7 +544,7 @@
                 showGiftMessage(`種子不足 (您只有 ${userInventory.seeds} 顆)。`); return;
             }
             if (type === 'apple' && userInventory.apples < amount) {
-                showGiftMessage(`蘋果不足 (您只有 ${userInventory.apples} 顆)。`); return;
+                showGiftMessage(`蘋果不足 (您只有 ${userExample.apples} 顆)。`); return;
             }
 
             submitGiftButton.disabled = true;
@@ -634,7 +639,7 @@
             button.addEventListener('click', () => {
                 const tabId = button.dataset.tab;
                 tabButtons.forEach(btn => {
-                    // [!! 修改 !!] 替換 Tab 顏色
+                    // [!! 修改 !!] T 替換 Tab 顏色
                     btn.classList.remove('border-customAppleYellow-500', 'text-customAppleYellow-600');
                     btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
                 });

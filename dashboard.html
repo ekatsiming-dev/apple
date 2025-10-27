@@ -25,12 +25,8 @@
                             500: '#B34B62', // 玫瑰紅 (邊框/焦點)
                             600: '#9D324E', // 酒紅色 (主要按鈕/文字)
                             700: '#6D2833'  // 深栗色 (按鈕 Hover)
-                        },
-                        // [!! 新增 !!] 專屬儀表板按鈕顏色
-                        mutedGreen: {
-                            600: '#6A7B68', // 來自背景圖的柔和苔綠色
-                            700: '#596A57'  // Hover 
                         }
+                        // [!! 修改 !!] 移除 mutedGreen
                     }
                 }
             }
@@ -55,8 +51,8 @@
                 <span class="fruit-icon text-5xl mr-3">🍎</span> 好好吃果園
             </h1>
             <p class="text-xl text-gray-200 mt-3 shadow-md">一起播種，一起發芽，只要澆水，就會長大</p>
-            <!-- [!! 修改 !!] 替換按鈕顏色，使其與背景圖更和諧 -->
-            <a href="member.html" class="mt-10 px-8 py-4 bg-mutedGreen-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-mutedGreen-700 transition duration-300 transform hover:-translate-y-1">
+            <!-- [!! 修改 !!] 替換為高對比的鮮紅色 (bg-red-600) -->
+            <a href="member.html" class="mt-10 px-8 py-4 bg-red-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-red-700 transition duration-300 transform hover:-translate-y-1">
                 <ion-icon name="log-in-outline" class="mr-2"></ion-icon>
                 登入並發送
             </a>
@@ -129,7 +125,7 @@
                             <ion-icon name="heart-outline" class="mr-1"></ion-icon>
                             園丁積分
                         </a>
-                        <!-- [!! 修改 !!] 替換 Tab 顏色 -->
+                        <!-- [!! 修改 !!] T 替換 Tab 顏色 -->
                         <a href="#" id="tab-fruitful" class="tab-link border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
                             <ion-icon name="trophy-outline" class="mr-1"></ion-icon>
                             豐收區

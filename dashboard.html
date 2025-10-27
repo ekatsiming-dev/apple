@@ -150,149 +150,142 @@
         
     </div>
 
-    <script type="module">
-        // [!!] 已填入您提供的 Apps Script 網址
-        const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
-        const appId = 'default-app-id';
-        
-        // DOM 元素
-        const tabs = document.querySelectorAll('.tab-link');
-        const contents = document.querySelectorAll('.tab-content');
-        
-        const wallContent = document.getElementById('content-wall');
-        const generousContent = document.getElementById('content-generous');
-        const fruitfulContent = document.getElementById('content-fruitful');
+<script type="module">
+    // [!!] 已填入您提供的 Apps Script 網址
+    const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
+    const appId = 'default-app-id';
+    
+    // DOM 元素
+    const tabs = document.querySelectorAll('.tab-link');
+    const contents = document.querySelectorAll('.tab-content');
+    
+    const wallContent = document.getElementById('content-wall');
+    const generousContent = document.getElementById('content-generous');
+    const fruitfulContent = document.getElementById('content-fruitful');
 
-        // --- 2. [修改] 初始化，改用 fetch (GET) ---
+    // --- 2. [修改] 初始化，改用 fetch (GET) ---
 
-        async function initializeDashboard() {
-            try {
-                // 呼叫 Apps Script API (GET)
-                const response = await fetch(`${API_URL}?action=get_dashboard_data`);
-                const result = await response.json();
+    async function initializeDashboard() {
+        try {
+            // 呼叫 Apps Script API (GET)
+            const response = await fetch(`${API_URL}?action=get_dashboard_data`);
+            const result = await response.json();
 
-                if (result.status === 'success') {
-                    console.log("成功取得總覽資料");
-                    const { generousList, fruitfulList, wallList } = result.data;
-                    renderWallList(wallList);
-                    renderGenerousList(generousList);
-                    renderFruitfulList(fruitfulList);
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                console.error("總覽資料載入失敗:", error);
-                wallContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗: ${error.message}</p>`;
-                generousContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗</p>`;
-                fruitfulContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗</p>`;
+            if (result.status === 'success') {
+                console.log("成功取得總覽資料", result.data); // [!! 改善 !!] 顯示收到的資料
+                const { generousList, fruitfulList, wallList } = result.data;
+                renderWallList(wallList);
+                renderGenerousList(generousList);
+                renderFruitfulList(fruitfulList);
+            } else {
+                throw new Error(result.message);
             }
+        } catch (error) {
+            console.error("總覽資料載入失敗:", error);
+            wallContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗: ${error.message}</p>`;
+            generousContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗</p>`;
+            fruitfulContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗</p>`;
         }
+    }
 
-        // --- 4. 渲染 DOM 內容 (邏輯不變) ---
+    // --- 4. 渲染 DOM 內容 (邏輯不變) ---
 
-        function renderWallList(items) {
-            wallContent.innerHTML = ''; 
-            if (!items || items.length === 0) {
-                wallContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">目前還沒有任何感謝留言。</p>`;
-                return;
-            }
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "p-5 bg-yellow-50 rounded-lg border border-yellow-200 shadow-sm";
-                card.innerHTML = `
-                    <p class="text-lg text-gray-800">"${item.message}"</p>
-                    <p class="text-sm text-gray-500 mt-2 text-right">${item.timestamp}</p>
-                `;
-                wallContent.appendChild(card);
-            });
+    function renderWallList(items) {
+        wallContent.innerHTML = ''; 
+        if (!items || items.length === 0) {
+            // [!! 改善 !!] 區分「載入中」與「沒有資料」
+            wallContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">目前還沒有任何感謝留言。</p>`;
+            return;
         }
-
-        function renderGenerousList(users) {
-            generousContent.innerHTML = ''; 
-            if (!users || users.length === 0) {
-                generousContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">慷慨榜載入中...</p>`;
-                return;
-            }
-            
-            users.forEach((user, index) => { 
-                const rank = index + 1;
-                const card = document.createElement('div');
-                card.className = "flex items-center p-4 bg-gray-50 rounded-lg";
-                card.innerHTML = `
-                    <!-- [!! 修改 !!] 替換顏色 -->
-                    <span class="text-2xl font-bold text-customAppleYellow-600 w-10">${rank}.</span>
-                    <span class="text-lg font-medium text-gray-800 flex-1">${user.name}</span>
-                    <span class="text-lg font-semibold text-gray-700">${user.gardenerPoints || 0} 積分</span>
-                `;
-                generousContent.appendChild(card);
-            });
-        }
-        
-        // [!! 修正 !!] 移除重複宣告的第一個 (錯誤的) 函式
-        
-        // [!! 修正 !!] 複製貼上錯誤，應為 fruitfulContent
-        function renderFruitfulList(users) {
-            fruitfulContent.innerHTML = ''; 
-            if (!users || users.length === 0) {
-                fruitfulContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">成果榜載入中...</p>`;
-                return;
-            }
-            
-            users.forEach((user, index) => { 
-                const rank = index + 1;
-                const card = document.createElement('div');
-                // [!! 修改 !!] 讓豐收區卡片在手機上有足夠空間
-                card.className = "flex items-center p-3 sm:p-4 bg-yellow-50 rounded-lg";
-                card.innerHTML = `
-                    <!-- [!! 修改 !!] T 替換顏色 -->
-                    <span class="text-2xl font-bold text-customAppleYellow-600 w-10">${rank}.</span>
-                    <!-- [!! 修改 !!] 減少手機上的字體大小 -->
-                    <span class="text-base sm:text-lg font-medium text-gray-800 flex-1">${user.name}</span>
-                    <!-- [!! 修改 !!] 減少手機上的字體大小，並為蘋果icon增加間距 -->
-                    <span class="text-base sm:text-lg font-semibold text-gray-700">
-                        <span class="fruit-icon">🌟</span> ${user.goldenApples || 0}
-                        <span class="fruit-icon ml-2 sm:ml-3">🍎</span> ${user.apples || 0}
-                    </span>
-                `;
-                fruitfulContent.appendChild(card); // [!! 修正 !!]
-            });
-        }
-
-
-        // --- 5. 頁面互動 (分頁切換) (邏輯不變) ---
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            tabs.forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    
-                    tabs.forEach(t => {
-                        // [!! 修改 !!] 替換 Tab 顏色
-                        t.classList.remove('border-customAppleYellow-500', 'text-customAppleYellow-600');
-                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
-                        t.removeAttribute('aria-current');
-                    });
-
-                    contents.forEach(c => {
-                        c.style.display = 'none';
-                    });
-
-                    // [!! 修改 !!] 替換 Tab 顏色
-                    tab.classList.add('border-customAppleYellow-500', 'text-customAppleYellow-600');
-                    tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
-                    tab.setAttribute('aria-current', 'page');
-
-                    const targetId = tab.id.replace('tab-', 'content');
-                    const targetContent = document.getElementById(targetId);
-                    if (targetContent) {
-                        targetContent.style.display = 'block';
-                    }
-                });
-            });
-
-            initializeDashboard();
+        items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = "p-5 bg-yellow-50 rounded-lg border border-yellow-200 shadow-sm";
+            card.innerHTML = `
+                <p class="text-lg text-gray-800">"${item.message}"</p>
+                <p class="text-sm text-gray-500 mt-2 text-right">${item.timestamp}</p>
+            `;
+            wallContent.appendChild(card);
         });
-    </script>
+    }
+
+    function renderGenerousList(users) {
+        generousContent.innerHTML = ''; 
+        if (!users || users.length === 0) {
+            // [!! 改善 !!] 區分「載入中」與「沒有資料」
+            generousContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">目前沒有園丁積分資料。</p>`;
+            return;
+        }
+        
+        users.forEach((user, index) => { 
+            const rank = index + 1;
+            const card = document.createElement('div');
+            card.className = "flex items-center p-4 bg-gray-50 rounded-lg";
+            card.innerHTML = `
+                <span class="text-2xl font-bold text-customAppleYellow-600 w-10">${rank}.</span>
+                <span class="text-lg font-medium text-gray-800 flex-1">${user.name}</span>
+                <span class="text-lg font-semibold text-gray-700">${user.gardenerPoints || 0} 積分</span>
+            `;
+            generousContent.appendChild(card);
+        });
+    }
+    
+    function renderFruitfulList(users) {
+        fruitfulContent.innerHTML = ''; 
+        if (!users || users.length === 0) {
+            // [!! 改善 !!] 區分「載入中」與「沒有資料」
+            fruitfulContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">目前沒有豐收成果資料。</p>`;
+            return;
+        }
+        
+        users.forEach((user, index) => { 
+            const rank = index + 1;
+            const card = document.createElement('div');
+            card.className = "flex items-center p-3 sm:p-4 bg-yellow-50 rounded-lg";
+            card.innerHTML = `
+                <span class="text-2xl font-bold text-customAppleYellow-600 w-10">${rank}.</span>
+                <span class="text-base sm:text-lg font-medium text-gray-800 flex-1">${user.name}</span>
+                <span class="text-base sm:text-lg font-semibold text-gray-700">
+                    <span class="fruit-icon">🌟</span> ${user.goldenApples || 0}
+                    <span class="fruit-icon ml-2 sm:ml-3">🍎</span> ${user.apples || 0}
+                </span>
+            `;
+            fruitfulContent.appendChild(card); 
+        });
+    }
+
+
+    // --- 5. 頁面互動 (分頁切換) (邏輯不變) ---
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                tabs.forEach(t => {
+                    t.classList.remove('border-customAppleYellow-500', 'text-customAppleYellow-600');
+                    t.classList.add('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
+                    t.removeAttribute('aria-current');
+                });
+
+                contents.forEach(c => {
+                    c.style.display = 'none';
+                });
+
+                tab.classList.add('border-customAppleYellow-500', 'text-customAppleYellow-600');
+                tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
+                tab.setAttribute('aria-current', 'page');
+
+                const targetId = tab.id.replace('tab-', 'content');
+                const targetContent = document.getElementById(targetId);
+                if (targetContent) {
+                    targetContent.style.display = 'block';
+                }
+            });
+        });
+
+        initializeDashboard();
+    });
+</script>
 
 </body>
 </html>

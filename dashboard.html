@@ -174,7 +174,7 @@
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    console.log("成功取得總覽資料", result.data); // [!! 改善 !!] 顯示收到的資料
+                    console.log("成功取得總覽資料", result.data); // [!! 改善 !!] 顯示收到的資料 (這就是您在 console 看到的)
                     const { generousList, fruitfulList, wallList } = result.data;
                     renderWallList(wallList);
                     renderGenerousList(generousList);

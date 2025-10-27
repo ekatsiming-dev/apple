@@ -26,7 +26,6 @@
                             600: '#9D324E', // 酒紅色 (主要按鈕/文字)
                             700: '#6D2833'  // 深栗色 (按鈕 Hover)
                         }
-                        // [!! 修改 !!] 移除 mutedGreen
                     }
                 }
             }
@@ -50,7 +49,7 @@
             <h1 class="text-4xl sm:text-5xl font-bold text-white flex items-center justify-center shadow-md">
                 <span class="fruit-icon text-5xl mr-3">🍎</span> 好好吃果園
             </h1>
-            <p class="text-xl text-gray-200 mt-3 shadow-md">一起播種，一起發芽，只要澆水，就會長大</p>
+            <p class="text-xl text-gray-200 mt-3 shadow-md">一起播種，一起發芽<br>只要澆水，就會長大</p>
             <!-- [!! 修改 !!] 替換為高對比的鮮紅色 (bg-red-600) -->
             <a href="member.html" class="mt-10 px-8 py-4 bg-red-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-red-700 transition duration-300 transform hover:-translate-y-1">
                 <ion-icon name="log-in-outline" class="mr-2"></ion-icon>
@@ -114,19 +113,20 @@
             <div class="p-6 sm:p-8">
                 
                 <div class="border-b border-gray-200">
-                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                        <!-- [!! 修改 !!] 替換 Tab 顏色 -->
-                        <a href="#" id="tab-wall" class="tab-link border-customAppleYellow-500 text-customAppleYellow-600 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg" aria-current="page">
+                    <!-- [!! 修改 !!] 移除 space-x-6, 增加 justify-between -->
+                    <nav class="-mb-px flex justify-between" aria-label="Tabs">
+                        <!-- [!! 修改 !!] 移除 px-1, 增加 text-base sm:text-lg -->
+                        <a href="#" id="tab-wall" class="tab-link border-customAppleYellow-500 text-customAppleYellow-600 whitespace-nowrap py-3 border-b-2 font-medium text-base sm:text-lg" aria-current="page">
                             <ion-icon name="chatbubbles-outline" class="mr-1"></ion-icon>
                             園丁留言
                         </a>
-                        <!-- [!! 修改 !!] 替換 Tab 顏色 -->
-                        <a href="#" id="tab-generous" class="tab-link border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
+                        <!-- [!! 修改 !!] 移除 px-1, 增加 text-base sm:text-lg -->
+                        <a href="#" id="tab-generous" class="tab-link border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap py-3 border-b-2 font-medium text-base sm:text-lg">
                             <ion-icon name="heart-outline" class="mr-1"></ion-icon>
                             園丁積分
                         </a>
-                        <!-- [!! 修改 !!] T 替換 Tab 顏色 -->
-                        <a href="#" id="tab-fruitful" class="tab-link border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
+                        <!-- [!! 修改 !!] 移除 px-1, 增加 text-base sm:text-lg -->
+                        <a href="#" id="tab-fruitful" class="tab-link border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap py-3 border-b-2 font-medium text-base sm:text-lg">
                             <ion-icon name="trophy-outline" class="mr-1"></ion-icon>
                             豐收區
                         </a>
@@ -227,7 +227,10 @@
                 generousContent.appendChild(card);
             });
         }
-
+        
+        // [!! 修正 !!] 移除重複宣告的第一個 (錯誤的) 函式
+        
+        // [!! 修正 !!] 複製貼上錯誤，應為 fruitfulContent
         function renderFruitfulList(users) {
             fruitfulContent.innerHTML = ''; 
             if (!users || users.length === 0) {
@@ -238,19 +241,23 @@
             users.forEach((user, index) => { 
                 const rank = index + 1;
                 const card = document.createElement('div');
-                card.className = "flex items-center p-4 bg-yellow-50 rounded-lg";
+                // [!! 修改 !!] 讓豐收區卡片在手機上有足夠空間
+                card.className = "flex items-center p-3 sm:p-4 bg-yellow-50 rounded-lg";
                 card.innerHTML = `
-                    <!-- [!! 修改 !!] 替換顏色 -->
+                    <!-- [!! 修改 !!] T 替換顏色 -->
                     <span class="text-2xl font-bold text-customAppleYellow-600 w-10">${rank}.</span>
-                    <span class="text-lg font-medium text-gray-800 flex-1">${user.name}</span>
-                    <span class="text-lg font-semibold text-gray-700">
+                    <!-- [!! 修改 !!] 減少手機上的字體大小 -->
+                    <span class="text-base sm:text-lg font-medium text-gray-800 flex-1">${user.name}</span>
+                    <!-- [!! 修改 !!] 減少手機上的字體大小，並為蘋果icon增加間距 -->
+                    <span class="text-base sm:text-lg font-semibold text-gray-700">
                         <span class="fruit-icon">🌟</span> ${user.goldenApples || 0}
-                        <span class="fruit-icon ml-3">🍎</span> ${user.apples || 0}
+                        <span class="fruit-icon ml-2 sm:ml-3">🍎</span> ${user.apples || 0}
                     </span>
                 `;
-                fruitfulContent.appendChild(card);
+                fruitfulContent.appendChild(card); // [!! 修正 !!]
             });
         }
+
 
         // --- 5. 頁面互動 (分頁切換) (邏輯不變) ---
         
@@ -275,7 +282,7 @@
                     tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
                     tab.setAttribute('aria-current', 'page');
 
-                    const targetId = tab.id.replace('tab-', 'content-');
+                    const targetId = tab.id.replace('tab-', 'content');
                     const targetContent = document.getElementById(targetId);
                     if (targetContent) {
                         targetContent.style.display = 'block';

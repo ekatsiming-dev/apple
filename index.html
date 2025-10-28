@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>好好吃果園 - 總覽</title>
+    <link rel="icon" type="image/png" href="apple-f.png">
+    <link rel="apple-touch-icon" href="apple-f.png">
+    
+    <!-- 載入 Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- [!! 修改 !!] 載入您指定的自訂配色方案 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        customAppleYellow: {
+                            50: '#FCFAF5',  // 更淡的奶油黃 (背景)
+                            500: '#B34B62', // 玫瑰紅 (邊框/焦點)
+                            600: '#9D324E', // 酒紅色 (主要按鈕/文字)
+                            700: '#6D2833'  // 深栗色 (按鈕 Hover)
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <style>
+        .fruit-icon { font-size: 1.25rem; margin-right: 0.25rem; }
+        .parallax-hero { background-image: url('apple.png'); }
+    </style>
+</head>
+<!-- [!! 修改 !!] 替換背景色 -->
+<body class="bg-customAppleYellow-50 font-sans leading-normal tracking-normal">
+
+    <div class="parallax-hero w-full h-96 lg:h-[500px] bg-cover bg-bottom bg-fixed relative shadow-lg">
+        <div class="absolute inset-0 bg-black/50"></div>
+        <div class="relative z-10 max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-center items-center text-center">
+            <h1 class="text-5xl font-bold text-white flex items-center justify-center shadow-md">
+                <span class="fruit-icon text-5xl mr-3">🍎</span> 好好吃果園
+            </h1>
+            <p class="text-xl text-gray-200 mt-3 shadow-md">一起播種，一起發芽<br>只要澆水，就會長大</p>
+            <!-- [!! 修改 !!] 替換按鈕顏色 -->
+            <a href="member.html" class="mt-10 px-8 py-4 bg-customAppleYellow-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-customAppleYellow-700 transition duration-300 transform hover:-translate-y-1">
+                <ion-icon name="log-in-outline" class="mr-2"></ion-icon>
+                登入並發送
+            </a>
+        </div>
+    </div>
+
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col items-center"> 
+        <!-- [!! 新增 園長的話 !!] -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full mb-6">
+            <div class="md:flex">
+                <div class="md:shrink-0 md:w-48">
+                    <!-- [!! 修改 !!] 替換預設圖片顏色 -->
+                    <img class="h-48 w-full object-cover md:h-full" src="keeper.jpg" alt="園長的照片" onerror="this.src='https://placehold.co/192x192/B34B62/FCFAF5?text=Keeper'">
+                </div>
+                <div class="p-6 sm:p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-3 flex items-center">
+                        <!-- [!! 修改 !!] 替換圖示顏色 -->
+                        <ion-icon name="happy-outline" class="mr-2 text-customAppleYellow-600"></ion-icon>
+                        園長的話
+                    </h2>
+                    <p class="text-gray-700 md:text-lg">
+                        「喵喵喵喵喵喵，喵喵。喵~喵喵喵~喵喵、喵喵喵，喵！」<br>
+                        
+                        
+                    </p>
+                </div>
+            </div>
+        </div>        
+        <!-- [!! 新增 !!] 遊戲規則區塊 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full mb-6">
+            <div class="p-6 sm:p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <!-- [!! 修改 !!] 替換圖示顏色 -->
+                    <ion-icon name="game-controller-outline" class="mr-2 text-customAppleYellow-600"></ion-icon>
+                    遊戲規則
+                </h2>
+                <ul class="list-disc pl-5 space-y-3 text-gray-700 md:text-lg">
+                    <li>
+                        <strong>播種 (送出):</strong>
+                        <ul class="list-outside list-[''-] pl-6 space-y-1 mt-1 text-base md:text-lg">
+                            <li>送 <span class="font-semibold text-yellow-700">🌱 種子</span> ➜ 消耗 1 顆 (得 1 園丁積分)</li>
+                            <li>送 <span class="font-semibold text-red-700">🍎 蘋果</span> ➜ 消耗 1 顆 (得 5 園丁積分)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>豐收 (接收):</strong>
+                        <ul class="list-outside list-[''-] pl-6 space-y-1 mt-1 text-base md:text-lg">
+                            <li>收到 <span class="font-semibold text-yellow-700">🌱 種子</span> ➜ 獲得 <span class="font-semibold text-red-700">🍎 蘋果</span></li>
+                            <li>收到 <span class="font-semibold text-red-700">🍎 蘋果</span> ➜ 獲得 <span class="font-semibold text-yellow-500">🌟 金蘋果</span></li>
+                        </ul>
+                    </li>
+                     <li>
+                        <strong>資源:</strong> 每天登入補充 <span class="font-semibold">3 顆種子</span> (上限 10 顆)。蘋果和金蘋果只能透過他人贈送獲得。
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 原有的排行榜區塊 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full">
+            <div class="p-6 sm:p-8">
+                
+                <div class="border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                        <!-- [!! 修改 !!] 替換 Tab 顏色 -->
+                        <a href="#" id="tab-wall" class="tab-link border-customAppleYellow-500 text-customAppleYellow-600 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg" aria-current="page">
+                            <ion-icon name="chatbubbles-outline" class="mr-1"></ion-icon>
+                            園丁留言
+                        </a>
+                        <a href="#" id="tab-generous" class="tab-link border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
+                            <ion-icon name="heart-outline" class="mr-1"></ion-icon>
+                            園丁積分
+                        </a>
+                        <a href="#" id="tab-fruitful" class="tab-link border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
+                            <ion-icon name="trophy-outline" class="mr-1"></ion-icon>
+                            豐收區
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="mt-6 min-h-[400px]">
+                    <div id="content-wall" class="tab-content space-y-4">
+                        <p class="placeholder-text text-gray-500 text-center p-8">澆水中...</p>
+                    </div>
+                    <div id="content-generous" class="tab-content space-y-3" style="display: none;">
+                        <p class="placeholder-text text-gray-500 text-center p-8">澆水中...</p>
+                    </div>
+                    <div id="content-fruitful" class="tab-content space-y-3" style="display: none;">
+                        <p class="placeholder-text text-gray-500 text-center p-8">澆水中...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+
+    <script type="module">
+        // [!!] 已填入您提供的 Apps Script 網址
+        const API_URL = 'https://script.google.com/macros/s/AKfycbz6PfmdrVdHEWOyBUskzCIR3ubwJviCd_kvRi2-XbWnzVxcGqYhHSvRb_Z88hI1Sghq/exec';
+        const appId = 'default-app-id';
+        
+        // DOM 元素
+        const tabs = document.querySelectorAll('.tab-link');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        const wallContent = document.getElementById('content-wall');
+        const generousContent = document.getElementById('content-generous');
+        const fruitfulContent = document.getElementById('content-fruitful');
+
+        // --- 2. [修改] 初始化，改用 fetch (GET) ---
+
+        async function initializeDashboard() {
+            try {
+                // 呼叫 Apps Script API (GET)
+                const response = await fetch(`${API_URL}?action=get_dashboard_data`);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    console.log("成功取得總覽資料");
+                    const { generousList, fruitfulList, wallList } = result.data;
+                    renderWallList(wallList);
+                    renderGenerousList(generousList);
+                    renderFruitfulList(fruitfulList);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error("總覽資料載入失敗:", error);
+                wallContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗: ${error.message}</p>`;
+                generousContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗</p>`;
+                fruitfulContent.innerHTML = `<p class="placeholder-text text-red-500 text-center p-8">資料載入失敗</p>`;
+            }
+        }
+
+        // --- 4. 渲染 DOM 內容 (邏輯不變) ---
+
+        function renderWallList(items) {
+            wallContent.innerHTML = ''; 
+            if (!items || items.length === 0) {
+                wallContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">目前還沒有任何感謝留言。</p>`;
+                return;
+            }
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "p-5 bg-yellow-50 rounded-lg border border-yellow-200 shadow-sm";
+                card.innerHTML = `
+                    <p class="text-lg text-gray-800">"${item.message}"</p>
+                    <p class="text-sm text-gray-500 mt-2 text-right">${item.timestamp}</p>
+                `;
+                wallContent.appendChild(card);
+            });
+        }
+
+        function renderGenerousList(users) {
+            generousContent.innerHTML = ''; 
+            if (!users || users.length === 0) {
+                generousContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">慷慨榜載入中...</p>`;
+                return;
+            }
+            
+            users.forEach((user, index) => { 
+                const rank = index + 1;
+                const card = document.createElement('div');
+                card.className = "flex items-center p-4 bg-gray-50 rounded-lg";
+                card.innerHTML = `
+                    <span class="text-2xl font-bold text-customAppleYellow-600 w-10">${rank}.</span>
+                    <span class="text-lg font-medium text-gray-800 flex-1">${user.name}</span>
+                    <span class="text-lg font-semibold text-gray-700">${user.gardenerPoints || 0} 積分</span>
+                `;
+                generousContent.appendChild(card);
+            });
+        }
+
+        function renderFruitfulList(users) {
+            fruitfulContent.innerHTML = ''; 
+            if (!users || users.length === 0) {
+                fruitfulContent.innerHTML = `<p class="placeholder-text text-gray-500 text-center p-8">成果榜載入中...</p>`;
+                return;
+            }
+            
+            users.forEach((user, index) => { 
+                const rank = index + 1;
+                const card = document.createElement('div');
+                card.className = "flex items-center p-4 bg-yellow-50 rounded-lg";
+                card.innerHTML = `
+                    <span class="text-2xl font-bold text-customAppleYellow-600 w-10">${rank}.</span>
+                    <span class="text-lg font-medium text-gray-800 flex-1">${user.name}</span>
+                    <span class="text-lg font-semibold text-gray-700">
+                        <span class="fruit-icon">🌟</span> ${user.goldenApples || 0}
+                        <span class="fruit-icon ml-3">🍎</span> ${user.apples || 0}
+                    </span>
+                `;
+                fruitfulContent.appendChild(card);
+            });
+        }
+
+        // --- 5. 頁面互動 (分頁切換) ---
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    tabs.forEach(t => {
+                        // [!! 修改 !!] 替換 Tab 顏色
+                        t.classList.remove('border-customAppleYellow-500', 'text-customAppleYellow-600');
+                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
+                        t.removeAttribute('aria-current');
+                    });
+
+                    contents.forEach(c => {
+                        c.style.display = 'none';
+                    });
+
+                    // [!! 修改 !!] 替換 Tab 顏色
+                    tab.classList.add('border-customAppleYellow-500', 'text-customAppleYellow-600');
+                    tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
+                    tab.setAttribute('aria-current', 'page');
+
+                    const targetId = tab.id.replace('tab-', 'content-');
+                    const targetContent = document.getElementById(targetId);
+                    if (targetContent) {
+                        targetContent.style.display = 'block';
+                    }
+                });
+            });
+
+            initializeDashboard();
+        });
+    </script>
+
+</body>
+</html>

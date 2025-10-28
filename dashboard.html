@@ -2,14 +2,33 @@
 <html lang="zh-TW">
 
 <head>
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>好好吃果園 - 總覽</title>
-        <link rel="icon" type="image/png" href="apple-f.png">
+    <link rel="icon" type="image/png" href="apple-f.png">
     <link rel="apple-touch-icon" href="apple-f.png">
+    
+    <!-- 載入 Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- [!! 修改 !!] 載入您指定的自訂配色方案 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        customAppleYellow: {
+                            50: '#FCFAF5',  // 更淡的奶油黃 (背景)
+                            500: '#B34B62', // 玫瑰紅 (邊框/焦點)
+                            600: '#9D324E', // 酒紅色 (主要按鈕/文字)
+                            700: '#6D2833'  // 深栗色 (按鈕 Hover)
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <style>
@@ -17,7 +36,8 @@
         .parallax-hero { background-image: url('apple.png'); }
     </style>
 </head>
-<body class="bg-orange-50 font-sans leading-normal tracking-normal">
+<!-- [!! 修改 !!] 替換背景色 -->
+<body class="bg-customAppleYellow-50 font-sans leading-normal tracking-normal">
 
     <div class="parallax-hero w-full h-96 lg:h-[500px] bg-cover bg-bottom bg-fixed relative shadow-lg">
         <div class="absolute inset-0 bg-black/50"></div>
@@ -26,7 +46,8 @@
                 <span class="fruit-icon text-5xl mr-3">🍎</span> 好好吃果園
             </h1>
             <p class="text-xl text-gray-200 mt-3 shadow-md">一起播種，一起發芽<br>只要澆水，就會長大</p>
-            <a href="member.html" class="mt-10 px-8 py-4 bg-orange-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-orange-700 transition duration-300 transform hover:-translate-y-1">
+            <!-- [!! 修改 !!] 替換按鈕顏色 -->
+            <a href="member.html" class="mt-10 px-8 py-4 bg-customAppleYellow-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-customAppleYellow-700 transition duration-300 transform hover:-translate-y-1">
                 <ion-icon name="log-in-outline" class="mr-2"></ion-icon>
                 登入並發送
             </a>
@@ -39,11 +60,13 @@
         <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full mb-6">
             <div class="md:flex">
                 <div class="md:shrink-0 md:w-48">
-                    <img class="h-48 w-full object-cover md:h-full" src="keeper.jpg" alt="園長的照片" onerror="this.src='https://placehold.co/192x192/FEE2D5/E98256?text=Keeper'">
+                    <!-- [!! 修改 !!] 替換預設圖片顏色 -->
+                    <img class="h-48 w-full object-cover md:h-full" src="keeper.jpg" alt="園長的照片" onerror="this.src='https://placehold.co/192x192/B34B62/FCFAF5?text=Keeper'">
                 </div>
                 <div class="p-6 sm:p-8">
                     <h2 class="text-2xl font-bold text-gray-800 mb-3 flex items-center">
-                        <ion-icon name="happy-outline" class="mr-2 text-orange-600"></ion-icon>
+                        <!-- [!! 修改 !!] 替換圖示顏色 -->
+                        <ion-icon name="happy-outline" class="mr-2 text-customAppleYellow-600"></ion-icon>
                         園長的話
                     </h2>
                     <p class="text-gray-700 md:text-lg">
@@ -58,7 +81,8 @@
         <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full mb-6">
             <div class="p-6 sm:p-8">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <ion-icon name="game-controller-outline" class="mr-2 text-orange-600"></ion-icon>
+                    <!-- [!! 修改 !!] 替換圖示顏色 -->
+                    <ion-icon name="game-controller-outline" class="mr-2 text-customAppleYellow-600"></ion-icon>
                     遊戲規則
                 </h2>
                 <ul class="list-disc pl-5 space-y-3 text-gray-700 md:text-lg">
@@ -89,15 +113,16 @@
                 
                 <div class="border-b border-gray-200">
                     <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                        <a href="#" id="tab-wall" class="tab-link border-orange-500 text-orange-600 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg" aria-current="page">
+                        <!-- [!! 修改 !!] 替換 Tab 顏色 -->
+                        <a href="#" id="tab-wall" class="tab-link border-customAppleYellow-500 text-customAppleYellow-600 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg" aria-current="page">
                             <ion-icon name="chatbubbles-outline" class="mr-1"></ion-icon>
                             園丁留言
                         </a>
-                        <a href="#" id="tab-generous" class="tab-link border-transparent text-gray-500 hover:text-orange-700 hover:border-orange-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
+                        <a href="#" id="tab-generous" class="tab-link border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
                             <ion-icon name="heart-outline" class="mr-1"></ion-icon>
                             園丁積分
                         </a>
-                        <a href="#" id="tab-fruitful" class="tab-link border-transparent text-gray-500 hover:text-orange-700 hover:border-orange-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
+                        <a href="#" id="tab-fruitful" class="tab-link border-transparent text-gray-500 hover:text-customAppleYellow-600 hover:border-customAppleYellow-500 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-lg">
                             <ion-icon name="trophy-outline" class="mr-1"></ion-icon>
                             豐收區
                         </a>
@@ -190,7 +215,7 @@
                 const card = document.createElement('div');
                 card.className = "flex items-center p-4 bg-gray-50 rounded-lg";
                 card.innerHTML = `
-                    <span class="text-2xl font-bold text-orange-600 w-10">${rank}.</span>
+                    <span class="text-2xl font-bold text-customAppleYellow-600 w-10">${rank}.</span>
                     <span class="text-lg font-medium text-gray-800 flex-1">${user.name}</span>
                     <span class="text-lg font-semibold text-gray-700">${user.gardenerPoints || 0} 積分</span>
                 `;
@@ -210,7 +235,7 @@
                 const card = document.createElement('div');
                 card.className = "flex items-center p-4 bg-yellow-50 rounded-lg";
                 card.innerHTML = `
-                    <span class="text-2xl font-bold text-orange-600 w-10">${rank}.</span>
+                    <span class="text-2xl font-bold text-customAppleYellow-600 w-10">${rank}.</span>
                     <span class="text-lg font-medium text-gray-800 flex-1">${user.name}</span>
                     <span class="text-lg font-semibold text-gray-700">
                         <span class="fruit-icon">🌟</span> ${user.goldenApples || 0}
@@ -221,7 +246,7 @@
             });
         }
 
-        // --- 5. 頁面互動 (分頁切換) (邏輯不變) ---
+        // --- 5. 頁面互動 (分頁切換) ---
         
         document.addEventListener('DOMContentLoaded', () => {
             tabs.forEach(tab => {
@@ -229,8 +254,9 @@
                     e.preventDefault();
                     
                     tabs.forEach(t => {
-                        t.classList.remove('border-orange-500', 'text-orange-600');
-                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-orange-700', 'hover:border-orange-300');
+                        // [!! 修改 !!] 替換 Tab 顏色
+                        t.classList.remove('border-customAppleYellow-500', 'text-customAppleYellow-600');
+                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
                         t.removeAttribute('aria-current');
                     });
 
@@ -238,8 +264,9 @@
                         c.style.display = 'none';
                     });
 
-                    tab.classList.add('border-orange-500', 'text-orange-600');
-                    tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-orange-700', 'hover:border-orange-300');
+                    // [!! 修改 !!] 替換 Tab 顏色
+                    tab.classList.add('border-customAppleYellow-500', 'text-customAppleYellow-600');
+                    tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-customAppleYellow-600', 'hover:border-customAppleYellow-500');
                     tab.setAttribute('aria-current', 'page');
 
                     const targetId = tab.id.replace('tab-', 'content-');
